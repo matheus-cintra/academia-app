@@ -43,7 +43,6 @@ const LoginComponent: React.FC = () => {
 
   const handleState = (type: string, e: any) => {
     setForm(state => ({ ...state, [type]: e.target.value }));
-    // setError(false);
   };
 
   const handleClickOpen = () => {

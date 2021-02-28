@@ -1,0 +1,22 @@
+Step 1 -> Dados básicos
+  Nome
+  Email
+  Senha
+  Confirmar Senha
+  Telefone
+
+Step 2 -> Informações da Academia
+  Nome da Academia
+  CNPJ
+  Quantidade média de alunos
+
+Step 3 -> Tipo de Assinatura
+  Gratuita
+  Profissional
+  Customizada
+
+Step 4 -> Enviar Código de Confirmação Email
+  Campo para colocar o código de verificação
+  Link de Reenvio
+
+Step 5 -> "Parabéns, conta criada. Proceda para o login" (FECHAR)

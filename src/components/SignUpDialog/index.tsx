@@ -1,61 +1,46 @@
-import {
-  Dialog,
-  Button,
-  createStyles,
-  makeStyles,
-  Step,
-  StepLabel,
-  Stepper,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Dialog, Button, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import Step1 from './Steps/Step1';
+import Step2 from './Steps/Step2';
+import Step3 from './Steps/Step3';
+import useStyles from './styles';
 
 const SignUpDialogComponent: any = (props: any) => {
-  const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-      root: {
-        width: '100%',
-      },
-      backButton: {
-        marginRight: theme.spacing(1),
-      },
-      instructions: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-      },
-      actionsContainer: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        marginBottom: theme.spacing(2),
-        marginRight: theme.spacing(3),
-      },
-    })
-  );
+  const [form, setForm] = useState({});
 
-  function getSteps() {
+  const handleState = (type: string, e: any) => {
+    setForm(state => ({ ...state, [type]: e.target.value }));
+  };
+
+  const clearState = () => {
+    setForm({});
+  };
+
+  const getSteps = () => {
     return ['Dados Básicos', 'Dados da Academia', 'Tipo de Assinatura'];
-  }
+  };
 
-  function getStepContent(stepIndex: number) {
+  const getStepContent = (stepIndex: number) => {
     switch (stepIndex) {
       case 0:
-        return <Step1 />;
+        return <Step1 actualState={form} setState={handleState} clearState={clearState} />;
       case 1:
-        return 'What is an ad group anyways?';
+        return <Step2 actualState={form} setState={handleState} clearState={clearState} />;
       case 2:
-        return 'This is the bit I really care about!';
+        return <Step3 actualState={form} setState={handleState} clearState={clearState} />;
       default:
         return 'Unknown stepIndex';
     }
-  }
+  };
 
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
 
   const handleNext = () => {
+    console.warn('form > ', form);
+
+    if (activeStep === steps.length - 1) return handleClose();
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
 
@@ -67,10 +52,21 @@ const SignUpDialogComponent: any = (props: any) => {
     setActiveStep(0);
   };
 
+  const handleClose = () => {
+    props.handleClose();
+    clearState();
+    setActiveStep(0);
+  };
+
   return (
-    <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title">
+    <Dialog
+      open={props.open}
+      onClose={handleClose}
+      maxWidth={activeStep === 0 ? 'sm' : 'lg'}
+      aria-labelledby="form-dialog-title"
+    >
       <div className={classes.root}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper className={classes.overviewContainer} activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -79,7 +75,7 @@ const SignUpDialogComponent: any = (props: any) => {
         </Stepper>
         <div>
           {activeStep === steps.length ? (
-            <div>
+            <div className={classes.overviewContainer}>
               <Typography className={classes.instructions}>All steps completed</Typography>
               <Button onClick={handleReset}>Reset</Button>
             </div>
@@ -88,10 +84,10 @@ const SignUpDialogComponent: any = (props: any) => {
               <div>{getStepContent(activeStep)}</div>
               <div className={classes.actionsContainer}>
                 <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
-                  Back
+                  Voltar
                 </Button>
                 <Button variant="contained" color="primary" onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  {activeStep === steps.length - 1 ? 'Fechar' : 'Avançar'}
                 </Button>
               </div>
             </div>

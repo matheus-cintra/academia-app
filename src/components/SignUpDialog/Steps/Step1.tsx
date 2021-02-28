@@ -1,43 +1,13 @@
-import { Grid, makeStyles, Paper, TextField, Theme } from '@material-ui/core';
+import { Grid, Paper, TextField } from '@material-ui/core';
 import React from 'react';
+import useStyles from './styles';
 
-// import { Container } from './styles';
-
-const Step1: React.FC = () => {
-  const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-      height: '100vh',
-    },
-    paper: {
-      margin: theme.spacing(4),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    paperComponent: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      padding: '15px',
-      backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(1, 0, 1),
-    },
-    logo: {
-      height: '60px',
-      marginBottom: '25px',
-    },
-  }));
-
+const Step1: any = (props: any) => {
   const classes = useStyles();
+
+  const handleChange = (type: string, event: any) => {
+    props.setState(type, event);
+  };
 
   return (
     <Grid container>
@@ -49,11 +19,27 @@ const Step1: React.FC = () => {
               margin="normal"
               required
               fullWidth
+              id="name"
+              label="Nome"
+              name="name"
+              autoComplete="name"
+              autoFocus
+              type="text"
+              defaultValue={props.actualState.name}
+              onChange={e => handleChange('name', e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
               id="email"
               label="Email"
               name="email"
               autoComplete="email"
-              autoFocus
+              type="email"
+              defaultValue={props.actualState.email}
+              onChange={e => handleChange('email', e)}
             />
             <TextField
               variant="outlined"
@@ -65,6 +51,34 @@ const Step1: React.FC = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              defaultValue={props.actualState.password}
+              onChange={e => handleChange('password', e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="passwordConfirmation"
+              label="Confirmação de Senha"
+              type="password"
+              id="passwordConfirmation"
+              autoComplete="password-confirmation"
+              defaultValue={props.actualState.passwordConfirmation}
+              onChange={e => handleChange('passwordConfirmation', e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="phone"
+              label="Telefone"
+              type="text"
+              id="phone"
+              defaultValue={props.actualState.phone}
+              autoComplete="phone"
+              onChange={e => handleChange('phone', e)}
             />
           </form>
         </div>

@@ -1,12 +1,14 @@
-import { Dialog, Button, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
+import { Dialog, Button, Step, StepLabel, Stepper, Typography, Grow } from '@material-ui/core';
 import React, { useState } from 'react';
 import Step1 from './Steps/Step1';
 import Step2 from './Steps/Step2';
 import Step3 from './Steps/Step3';
 import useStyles from './styles';
+import { useFormik } from 'formik';
 
 const SignUpDialogComponent: any = (props: any) => {
   const [form, setForm] = useState({});
+  const [isNext, setIsNext] = useState(true);
 
   const handleState = (type: string, e: any) => {
     setForm(state => ({ ...state, [type]: e.target.value }));
@@ -20,16 +22,37 @@ const SignUpDialogComponent: any = (props: any) => {
     return ['Dados Básicos', 'Dados da Academia', 'Tipo de Assinatura'];
   };
 
+  const formik = useFormik({
+    initialValues: {
+      step1: {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirmation: '',
+        phone: '',
+      },
+      step2: {
+        gymName: '',
+        gymCnpj: '',
+      },
+      step3: {
+        subscription: '',
+      },
+    },
+    // validationSchema: validationSchema,
+    onSubmit: values => handleSubmit(values),
+  });
+
   const getStepContent = (stepIndex: number) => {
     switch (stepIndex) {
       case 0:
-        return <Step1 actualState={form} setState={handleState} clearState={clearState} />;
+        return <Step1 isNext={isNext} formik={formik} setState={handleState} clearState={clearState} />;
+
       case 1:
-        return <Step2 actualState={form} setState={handleState} clearState={clearState} />;
+        return <Step2 isNext={isNext} formik={formik} setState={handleState} clearState={clearState} />;
+
       case 2:
-        return <Step3 actualState={form} setState={handleState} clearState={clearState} />;
-      default:
-        return 'Unknown stepIndex';
+        return <Step3 isNext={isNext} formik={formik} setState={handleState} clearState={clearState} />;
     }
   };
 
@@ -38,13 +61,13 @@ const SignUpDialogComponent: any = (props: any) => {
   const steps = getSteps();
 
   const handleNext = () => {
-    console.warn('form > ', form);
-
     if (activeStep === steps.length - 1) return handleClose();
+    setIsNext(true);
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
 
   const handleBack = () => {
+    setIsNext(false);
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
@@ -58,43 +81,62 @@ const SignUpDialogComponent: any = (props: any) => {
     setActiveStep(0);
   };
 
+  const handleSubmit = async (data: any) => {
+    console.warn('data > submit > ', data);
+  };
+
   return (
-    <Dialog
-      open={props.open}
-      onClose={handleClose}
-      maxWidth={activeStep === 0 ? 'sm' : 'lg'}
-      aria-labelledby="form-dialog-title"
-    >
-      <div className={classes.root}>
-        <Stepper className={classes.overviewContainer} activeStep={activeStep} alternativeLabel>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          {activeStep === steps.length ? (
-            <div className={classes.overviewContainer}>
-              <Typography className={classes.instructions}>All steps completed</Typography>
-              <Button onClick={handleReset}>Reset</Button>
-            </div>
-          ) : (
+    <div>
+      <Dialog
+        open={props.open}
+        onClose={handleClose}
+        maxWidth={activeStep === 0 ? 'sm' : 'lg'}
+        aria-labelledby="form-dialog-title"
+      >
+        <div className={classes.root}>
+          <form id="registerForm" name="registerForm" onSubmit={formik.handleSubmit}>
+            <Stepper className={classes.overviewContainer} activeStep={activeStep} alternativeLabel>
+              {steps.map(label => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
             <div>
-              <div>{getStepContent(activeStep)}</div>
-              <div className={classes.actionsContainer}>
-                <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
-                  Voltar
-                </Button>
-                <Button variant="contained" color="primary" onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Fechar' : 'Avançar'}
-                </Button>
-              </div>
+              {activeStep === steps.length ? (
+                <div className={classes.overviewContainer}>
+                  <Typography className={classes.instructions}>All steps completed</Typography>
+                  <Button onClick={handleReset}>Reset</Button>
+                </div>
+              ) : (
+                <div>
+                  <div>{getStepContent(activeStep)}</div>
+                  <div className={classes.actionsContainer}>
+                    <Button
+                      type="button"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      className={classes.backButton}
+                    >
+                      Voltar
+                    </Button>
+                    {activeStep === 2 ? (
+                      <Button variant="contained" color="primary" type="submit">
+                        Registrar
+                      </Button>
+                    ) : (
+                      <Button type="button" variant="contained" color="primary" onClick={handleNext}>
+                        {activeStep === steps.length - 1 ? 'Fechar' : 'Avançar'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </form>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+    </div>
   );
 };
 

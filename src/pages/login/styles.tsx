@@ -53,4 +53,13 @@ export const useStyles = makeStyles(theme => ({
     height: '60px',
     marginBottom: '25px',
   },
+  svg: {
+    width: 100,
+    height: 100,
+  },
+  polygon: {
+    fill: theme.palette.common.white,
+    stroke: theme.palette.divider,
+    strokeWidth: 1,
+  },
 }));

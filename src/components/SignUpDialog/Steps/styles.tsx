@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: 24,
   },
   paper: {
+    width: '100%',
     margin: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',

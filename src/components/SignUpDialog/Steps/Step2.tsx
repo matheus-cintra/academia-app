@@ -1,50 +1,54 @@
-import { Grid, Paper, TextField } from '@material-ui/core';
+import { Grid, Paper, Slide, TextField } from '@material-ui/core';
 import React from 'react';
 import useStyles from './styles';
 
 const Step2: any = (props: any) => {
   const classes = useStyles();
 
-  const handleChange = (type: string, event: any) => {
-    props.setState(type, event);
-  };
+  console.warn('PROPS >> ', props.formik);
 
   return (
-    <Grid container>
-      <Grid item xs={12} component={Paper} className={classes.paperComponent} elevation={0} square>
-        <div className={classes.paper}>
-          <form name="form" className={classes.form} noValidate>
+    <Slide direction={props.isNext ? 'left' : 'right'} in mountOnEnter unmountOnExit timeout={400}>
+      <Grid container>
+        <Grid item xs={12} component={Paper} className={classes.paperComponent} elevation={0} square>
+          <div className={classes.paper}>
+            {/* <form name="form" className={classes.form} noValidate> */}
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              id="gym-name"
+              id="gymName"
               label="Nome da Academia"
-              name="gym-name"
-              autoComplete="gym-name"
+              name="step2.gymName"
+              autoComplete="gymName"
               autoFocus
-              defaultValue={props.actualState.gymName}
-              onChange={e => handleChange('gymName', e)}
               type="text"
+              value={props.formik.values.step2.gymName}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.gymName && Boolean(props.formik.errors.gymName)}
+              helperText={props.formik.touched.gymName && props.formik.errors.gymName}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              id="gym-cnpj"
+              id="gymCnpj"
               label="CNPJ da Academia"
-              name="gym-cnpj"
-              autoComplete="gym-cnpj"
-              defaultValue={props.actualState.gymCnpj}
-              onChange={e => handleChange('gymCnpj', e)}
+              name="step2.gymCnpj"
+              autoComplete="gymCnpj"
               type="text"
+              value={props.formik.values.step2.gymCnpj}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.gymCnpj && Boolean(props.formik.errors.gymCnpj)}
+              helperText={props.formik.touched.gymCnpj && props.formik.errors.gymCnpj}
             />
-          </form>
-        </div>
+            {/* </form> */}
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+    </Slide>
   );
 };
 

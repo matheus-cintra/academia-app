@@ -1,28 +1,16 @@
-import { Grid, Paper, Typography, TextField, Button, Link } from '@material-ui/core';
+import { Grid, Paper, Typography, TextField, Button, Link, Grow } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useStyles } from './styles';
 import { getMonth } from 'date-fns';
 import logo from '../../assets/images/logo.png';
-import api from '../../services/api';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import SignUpDialogComponent from '../../components/SignUpDialog';
-
-const schema = Yup.object().shape({
-  email: Yup.string().email('Email inválido'),
-  password: Yup.string(),
-});
+import { useFormik } from 'formik';
+import { getDBData } from '../../services/api';
+import { toast } from 'react-toastify';
 
 const LoginComponent: React.FC = () => {
-  const [form, setForm] = useState({
-    email: null,
-    password: null,
-  });
-  const [hasError, setError] = useState({
-    email: false,
-    password: false,
-  });
-
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const getSeason = () => {
     const month = getMonth(Date.now());
@@ -41,9 +29,19 @@ const LoginComponent: React.FC = () => {
 
   const classes = useStyles({ season });
 
-  const handleState = (type: string, e: any) => {
-    setForm(state => ({ ...state, [type]: e.target.value }));
-  };
+  const validationSchema = yup.object().shape({
+    email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
+    password: yup.string().required('Campo obrigatório'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: values => handleSubmit(values),
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,37 +51,11 @@ const LoginComponent: React.FC = () => {
     setOpen(false);
   };
 
-  const handleSubmit = async (e: any) => {
-    try {
-      e.preventDefault();
-
-      const validateForm: any = form;
-      const formError: any = {
-        email: false,
-        password: false,
-      };
-
-      for (const item in validateForm) {
-        if (validateForm[item] === undefined || validateForm[item] === null || validateForm[item] === '') {
-          formError[item] = true;
-        }
-      }
-      console.warn('errorrs > ', formError);
-
-      setError({ ...formError });
-
-      await schema.validate(form, {
-        abortEarly: true,
-      });
-
-      const result = await api.get('/');
-      console.warn('result > ', result);
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const path: any = error.path;
-        setError(state => ({ ...state, [path]: true }));
-      }
-    }
+  const handleSubmit = async (data: any) => {
+    console.warn('data > ', data);
+    const result = await getDBData('/');
+    console.warn('result > ', result);
+    toast.success('RODOU');
   };
 
   return (
@@ -95,34 +67,36 @@ const LoginComponent: React.FC = () => {
           <Typography component="h1" variant="h5">
             Atlantis Gym
           </Typography>
-          <form name="form" className={classes.form} noValidate onSubmit={handleSubmit}>
+          <form className={classes.form} id="loginForm" name="loginForm" onSubmit={formik.handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              error={hasError.email}
-              helperText={hasError.email ? 'Email Inválido' : false}
               id="email"
-              label="Email"
               name="email"
+              label="E-mail"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
               autoComplete="email"
               autoFocus
-              onChange={e => handleState('email', e)}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
-              error={hasError.password}
-              helperText={hasError.password ? 'Senha Inválida' : false}
               fullWidth
               name="password"
               label="Senha"
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={e => handleState('password', e)}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
             <Grid container spacing={3}>
               <Grid item xs={6}>
@@ -153,7 +127,9 @@ const LoginComponent: React.FC = () => {
           </form>
         </div>
       </Grid>
-      <SignUpDialogComponent handleClose={handleClose} open={open} />
+      <Grow in={open} mountOnEnter unmountOnExit timeout={2000} onEnter={(node: any) => console.warn(node)}>
+        <SignUpDialogComponent handleClose={handleClose} open={open} />
+      </Grow>
     </Grid>
   );
 };

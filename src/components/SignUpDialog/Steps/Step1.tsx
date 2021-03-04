@@ -1,19 +1,16 @@
-import { Grid, Paper, TextField } from '@material-ui/core';
+import { Grid, Paper, Slide, TextField } from '@material-ui/core';
 import React from 'react';
 import useStyles from './styles';
 
 const Step1: any = (props: any) => {
   const classes = useStyles();
 
-  const handleChange = (type: string, event: any) => {
-    props.setState(type, event);
-  };
-
   return (
-    <Grid container>
-      <Grid item xs={12} component={Paper} className={classes.paperComponent} elevation={0} square>
-        <div className={classes.paper}>
-          <form name="form" className={classes.form} noValidate>
+    <Slide direction={props.isNext ? 'left' : 'right'} in mountOnEnter unmountOnExit timeout={400}>
+      <Grid container>
+        <Grid item xs={12} component={Paper} className={classes.paperComponent} elevation={0} square>
+          <div className={classes.paper}>
+            {/* <form name="form" className={classes.form} noValidate> */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -21,12 +18,14 @@ const Step1: any = (props: any) => {
               fullWidth
               id="name"
               label="Nome"
-              name="name"
+              name="step1.name"
               autoComplete="name"
               autoFocus
               type="text"
-              defaultValue={props.actualState.name}
-              onChange={e => handleChange('name', e)}
+              value={props.formik.values.step1.name}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.name && Boolean(props.formik.errors.name)}
+              helperText={props.formik.touched.name && props.formik.errors.name}
             />
             <TextField
               variant="outlined"
@@ -35,55 +34,64 @@ const Step1: any = (props: any) => {
               fullWidth
               id="email"
               label="Email"
-              name="email"
+              name="step1.email"
               autoComplete="email"
               type="email"
-              defaultValue={props.actualState.email}
-              onChange={e => handleChange('email', e)}
+              value={props.formik.values.step1.email}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.email && Boolean(props.formik.errors.email)}
+              helperText={props.formik.touched.email && props.formik.errors.email}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="step1.password"
               label="Senha"
               type="password"
               id="password"
               autoComplete="current-password"
-              defaultValue={props.actualState.password}
-              onChange={e => handleChange('password', e)}
+              value={props.formik.values.step1.password}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.password && Boolean(props.formik.errors.password)}
+              helperText={props.formik.touched.password && props.formik.errors.password}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="passwordConfirmation"
+              name="step1.passwordConfirmation"
               label="Confirmação de Senha"
               type="password"
               id="passwordConfirmation"
               autoComplete="password-confirmation"
-              defaultValue={props.actualState.passwordConfirmation}
-              onChange={e => handleChange('passwordConfirmation', e)}
+              value={props.formik.values.step1.passwordConfirmation}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.passwordConfirmation && Boolean(props.formik.errors.passwordConfirmation)}
+              helperText={props.formik.touched.passwordConfirmation && props.formik.errors.passwordConfirmation}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="phone"
+              name="step1.phone"
               label="Telefone"
               type="text"
               id="phone"
-              defaultValue={props.actualState.phone}
               autoComplete="phone"
-              onChange={e => handleChange('phone', e)}
+              value={props.formik.values.step1.phone}
+              onChange={props.formik.handleChange}
+              error={props.formik.touched.phone && Boolean(props.formik.errors.phone)}
+              helperText={props.formik.touched.phone && props.formik.errors.phone}
             />
-          </form>
-        </div>
+            {/* </form> */}
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+    </Slide>
   );
 };
 

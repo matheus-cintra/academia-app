@@ -14,31 +14,31 @@ const Step2: any = (props: any) => {
           <div className={classes.paper}>
             {/* <form name="form" className={classes.form} noValidate> */}
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               required
               fullWidth
-              id="gymName"
-              label="Nome da Academia"
-              name="step2.gymName"
-              autoComplete="gymName"
+              id='gymName'
+              label='Nome da Academia'
+              name='step2.gymName'
+              autoComplete='gymName'
               autoFocus
-              type="text"
+              type='text'
               value={props.formik.values.step2.gymName}
               onChange={props.formik.handleChange}
               error={props.formik.touched.gymName && Boolean(props.formik.errors.gymName)}
               helperText={props.formik.touched.gymName && props.formik.errors.gymName}
             />
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               required
               fullWidth
-              id="gymCnpj"
-              label="CNPJ da Academia"
-              name="step2.gymCnpj"
-              autoComplete="gymCnpj"
-              type="text"
+              id='gymCnpj'
+              label='CNPJ da Academia'
+              name='step2.gymCnpj'
+              autoComplete='gymCnpj'
+              type='text'
               value={props.formik.values.step2.gymCnpj}
               onChange={props.formik.handleChange}
               error={props.formik.touched.gymCnpj && Boolean(props.formik.errors.gymCnpj)}

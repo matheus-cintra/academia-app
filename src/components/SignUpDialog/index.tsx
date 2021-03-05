@@ -1,4 +1,4 @@
-import { Dialog, Button, Step, StepLabel, Stepper, Typography, Grow } from '@material-ui/core';
+import { Button, Dialog, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import Step1 from './Steps/Step1';
 import Step2 from './Steps/Step2';
@@ -91,10 +91,10 @@ const SignUpDialogComponent: any = (props: any) => {
         open={props.open}
         onClose={handleClose}
         maxWidth={activeStep === 0 ? 'sm' : 'lg'}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby='form-dialog-title'
       >
         <div className={classes.root}>
-          <form id="registerForm" name="registerForm" onSubmit={formik.handleSubmit}>
+          <form id='registerForm' name='registerForm' onSubmit={formik.handleSubmit}>
             <Stepper className={classes.overviewContainer} activeStep={activeStep} alternativeLabel>
               {steps.map(label => (
                 <Step key={label}>
@@ -113,7 +113,7 @@ const SignUpDialogComponent: any = (props: any) => {
                   <div>{getStepContent(activeStep)}</div>
                   <div className={classes.actionsContainer}>
                     <Button
-                      type="button"
+                      type='button'
                       disabled={activeStep === 0}
                       onClick={handleBack}
                       className={classes.backButton}
@@ -121,11 +121,11 @@ const SignUpDialogComponent: any = (props: any) => {
                       Voltar
                     </Button>
                     {activeStep === 2 ? (
-                      <Button variant="contained" color="primary" type="submit">
+                      <Button variant='contained' color='primary' type='submit'>
                         Registrar
                       </Button>
                     ) : (
-                      <Button type="button" variant="contained" color="primary" onClick={handleNext}>
+                      <Button type='button' variant='contained' color='primary' onClick={handleNext}>
                         {activeStep === steps.length - 1 ? 'Fechar' : 'Avançar'}
                       </Button>
                     )}

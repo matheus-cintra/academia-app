@@ -22,4 +22,4 @@ const updateDBData = async (apiPath: string, body?: any, params?: any): Promise<
   return await api.put(apiPath, body, { params });
 };
 
-export { getDBData, createDBData, updateDBData };
+export { api, getDBData, createDBData, updateDBData };

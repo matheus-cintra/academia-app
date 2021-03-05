@@ -1,9 +1,9 @@
 import {
-  PersonOutline,
-  ReceiptOutlined,
   AssignmentLateOutlined,
   LocalAtmOutlined,
   MonetizationOnOutlined,
+  PersonOutline,
+  ReceiptOutlined,
 } from '@material-ui/icons';
 import React from 'react';
 

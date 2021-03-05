@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography, TextField, Button, Link, Grow } from '@material-ui/core';
+import { Button, Grid, Grow, Link, Paper, TextField, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useStyles } from './styles';
 import { getMonth } from 'date-fns';
@@ -6,11 +6,11 @@ import logo from '../../assets/images/logo.png';
 import * as yup from 'yup';
 import SignUpDialogComponent from '../../components/SignUpDialog';
 import { useFormik } from 'formik';
-import { getDBData } from '../../services/api';
-import { toast } from 'react-toastify';
+import { useAuth } from '../../contexts/auth';
 
 const LoginComponent: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const context = useAuth();
 
   const getSeason = () => {
     const month = getMonth(Date.now());
@@ -52,47 +52,44 @@ const LoginComponent: React.FC = () => {
   };
 
   const handleSubmit = async (data: any) => {
-    console.warn('data > ', data);
-    const result = await getDBData('/');
-    console.warn('result > ', result);
-    toast.success('RODOU');
+    return await context.Login(data);
   };
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component='main' className={classes.root}>
       <Grid item xs={false} sm={6} md={8} lg={9} className={classes.image} />
       <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} className={classes.paperComponent} elevation={6} square>
         <div className={classes.paper}>
-          <img className={classes.logo} src={logo} />
-          <Typography component="h1" variant="h5">
+          <img className={classes.logo} src={logo} alt='Logo Atlantis' />
+          <Typography component='h1' variant='h5'>
             Atlantis Gym
           </Typography>
-          <form className={classes.form} id="loginForm" name="loginForm" onSubmit={formik.handleSubmit}>
+          <form className={classes.form} id='loginForm' name='loginForm' onSubmit={formik.handleSubmit}>
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               required
               fullWidth
-              id="email"
-              name="email"
-              label="E-mail"
+              id='email'
+              name='email'
+              label='E-mail'
               value={formik.values.email}
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-              autoComplete="email"
+              autoComplete='email'
               autoFocus
             />
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               required
               fullWidth
-              name="password"
-              label="Senha"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name='password'
+              label='Senha'
+              type='password'
+              id='password'
+              autoComplete='current-password'
               value={formik.values.password}
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
@@ -100,16 +97,16 @@ const LoginComponent: React.FC = () => {
             />
             <Grid container spacing={3}>
               <Grid item xs={6}>
-                <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
                   Acessar
                 </Button>
               </Grid>
               <Grid item xs={6}>
                 <Button
-                  type="button"
+                  type='button'
                   fullWidth
-                  variant="contained"
-                  color="secondary"
+                  variant='contained'
+                  color='secondary'
                   onClick={handleClickOpen}
                   className={classes.submit}
                 >
@@ -119,7 +116,7 @@ const LoginComponent: React.FC = () => {
             </Grid>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href='#' variant='body2'>
                   Esqueci minha senha
                 </Link>
               </Grid>

@@ -43,7 +43,7 @@ const Step3: any = (props: any) => {
             {plans.map(plan => (
               <Card
                 key={plan.key}
-                variant="outlined"
+                variant='outlined'
                 className={classes.cardRoot}
                 style={{
                   opacity:
@@ -62,16 +62,16 @@ const Step3: any = (props: any) => {
                 }}
               >
                 <CardContent className={classes.cardContent}>
-                  <Typography className={classes.title} color="textSecondary">
+                  <Typography className={classes.title} color='textSecondary'>
                     {plan.name}
                   </Typography>
                   <div className={classes.priceContainer}>
                     <Typography className={classes.price}>{plan.price}</Typography>
                   </div>
-                  <Typography className={classes.pos} color="textSecondary">
+                  <Typography className={classes.pos} color='textSecondary'>
                     Funcionalidades
                   </Typography>
-                  <List component="nav">
+                  <List component='nav'>
                     <ListItem>
                       <ListItemIcon>{plan.membersIcon}</ListItemIcon>
                       <ListItemText primary={plan.membersText} />
@@ -109,7 +109,7 @@ const Step3: any = (props: any) => {
                 <CardActions className={classes.selectButtonContainer}>
                   <Button
                     disabled={!plan.enabled}
-                    size="large"
+                    size='large'
                     className={classes.selectButton}
                     style={{ color: '#fff' }}
                     onClick={() => handleSubscriptionAdd(plan.key)}

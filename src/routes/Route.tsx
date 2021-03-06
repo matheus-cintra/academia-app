@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { useAuth } from '../contexts/auth';
+import MenuAppBar from '../components/appBar';
 
 // interface IRouteWrapper {
 //   component: any;
@@ -20,5 +21,21 @@ export default function RouteWrapper({ component: Component, isPrivate, ...rest 
 
   // const Layout = signed ? DefaultLayout : AuthLayout;
 
-  return <Route {...rest} render={props => <Component {...props} />} />;
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        signed ? (
+          <React.Fragment>
+            <MenuAppBar />
+            <Component {...props} />
+          </React.Fragment>
+        ) : (
+          <Component {...props} />
+        )
+      }
+    />
+  );
 }
+
+//<Component {...props} />

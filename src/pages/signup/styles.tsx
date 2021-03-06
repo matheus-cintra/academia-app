@@ -21,6 +21,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
     marginTop: theme.spacing(3),
   },
+  loaderComponent: {
+    display: 'flex',
+    minHeight: '350px',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
 }));
 
 export default useStyles;

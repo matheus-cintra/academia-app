@@ -93,6 +93,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     textDecoration: 'line-through',
     color: '#bbb',
   },
+  divider: {
+    display: 'flex',
+    width: '100%',
+    margin: '20px 0',
+  },
 }));
 
 export default useStyles;

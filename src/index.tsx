@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import 'fontsource-roboto';
@@ -8,11 +8,13 @@ import { ToastContainer } from 'react-toastify';
 
 ReactDOM.render(
   // <React.StrictMode>
-  <>
+  <Fragment>
+    {/*<ThemeProvider theme={theme}>*/}
     <CssBaseline />
     <App />
     <ToastContainer autoClose={3000} />
-  </>,
+    {/*</ThemeProvider>*/}
+  </Fragment>,
   // </React.StrictMode>,
   document.getElementById('root')
 );

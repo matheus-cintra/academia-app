@@ -5,8 +5,6 @@ import useStyles from './styles';
 const Step2: any = (props: any) => {
   const classes = useStyles();
 
-  console.warn('PROPS >> ', props.formik);
-
   return (
     <Slide direction={props.isNext ? 'left' : 'right'} in mountOnEnter unmountOnExit timeout={400}>
       <Grid container>
@@ -20,14 +18,15 @@ const Step2: any = (props: any) => {
               fullWidth
               id='gymName'
               label='Nome da Academia'
-              name='step2.gymName'
+              name='gymName'
               autoComplete='gymName'
               autoFocus
               type='text'
-              value={props.formik.values.step2.gymName}
+              value={props.formik.values.gymName}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.gymName && Boolean(props.formik.errors.gymName)}
-              helperText={props.formik.touched.gymName && props.formik.errors.gymName}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.gymName && Boolean(props.formik.errors.gymName)}
+              helperText={props.formik.dirty && props.formik.touched.gymName && props.formik.errors.gymName}
             />
             <TextField
               variant='outlined'
@@ -36,13 +35,14 @@ const Step2: any = (props: any) => {
               fullWidth
               id='gymCnpj'
               label='CNPJ da Academia'
-              name='step2.gymCnpj'
+              name='gymCnpj'
               autoComplete='gymCnpj'
               type='text'
-              value={props.formik.values.step2.gymCnpj}
+              value={props.formik.values.gymCnpj}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.gymCnpj && Boolean(props.formik.errors.gymCnpj)}
-              helperText={props.formik.touched.gymCnpj && props.formik.errors.gymCnpj}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.gymCnpj && Boolean(props.formik.errors.gymCnpj)}
+              helperText={props.formik.dirty && props.formik.touched.gymCnpj && props.formik.errors.gymCnpj}
             />
             {/* </form> */}
           </div>

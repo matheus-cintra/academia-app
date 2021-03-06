@@ -18,14 +18,15 @@ const Step1: any = (props: any) => {
               fullWidth
               id='name'
               label='Nome'
-              name='step1.name'
+              name='name'
               autoComplete='name'
               autoFocus
               type='text'
-              value={props.formik.values.step1.name}
+              value={props.formik.values.name}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.name && Boolean(props.formik.errors.name)}
-              helperText={props.formik.touched.name && props.formik.errors.name}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.name && Boolean(props.formik.errors.name)}
+              helperText={props.formik.dirty && props.formik.touched.name && props.formik.errors.name}
             />
             <TextField
               variant='outlined'
@@ -34,58 +35,70 @@ const Step1: any = (props: any) => {
               fullWidth
               id='email'
               label='Email'
-              name='step1.email'
+              name='email'
               autoComplete='email'
               type='email'
-              value={props.formik.values.step1.email}
+              value={props.formik.values.email}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.email && Boolean(props.formik.errors.email)}
-              helperText={props.formik.touched.email && props.formik.errors.email}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.email && Boolean(props.formik.errors.email)}
+              helperText={props.formik.dirty && props.formik.touched.email && props.formik.errors.email}
             />
             <TextField
               variant='outlined'
               margin='normal'
               required
               fullWidth
-              name='step1.password'
+              name='password'
               label='Senha'
               type='password'
               id='password'
               autoComplete='current-password'
-              value={props.formik.values.step1.password}
+              value={props.formik.values.password}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.password && Boolean(props.formik.errors.password)}
-              helperText={props.formik.touched.password && props.formik.errors.password}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.password && Boolean(props.formik.errors.password)}
+              helperText={props.formik.dirty && props.formik.touched.password && props.formik.errors.password}
             />
             <TextField
               variant='outlined'
               margin='normal'
               required
               fullWidth
-              name='step1.passwordConfirmation'
+              name='passwordConfirmation'
               label='Confirmação de Senha'
               type='password'
               id='passwordConfirmation'
               autoComplete='password-confirmation'
-              value={props.formik.values.step1.passwordConfirmation}
+              value={props.formik.values.passwordConfirmation}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.passwordConfirmation && Boolean(props.formik.errors.passwordConfirmation)}
-              helperText={props.formik.touched.passwordConfirmation && props.formik.errors.passwordConfirmation}
+              onBlur={props.formik.handleBlur}
+              error={
+                props.formik.dirty &&
+                props.formik.touched.passwordConfirmation &&
+                Boolean(props.formik.errors.passwordConfirmation)
+              }
+              helperText={
+                props.formik.dirty &&
+                props.formik.touched.passwordConfirmation &&
+                props.formik.errors.passwordConfirmation
+              }
             />
             <TextField
               variant='outlined'
               margin='normal'
               required
               fullWidth
-              name='step1.phone'
+              name='phone'
               label='Telefone'
               type='text'
               id='phone'
               autoComplete='phone'
-              value={props.formik.values.step1.phone}
+              value={props.formik.values.phone}
               onChange={props.formik.handleChange}
-              error={props.formik.touched.phone && Boolean(props.formik.errors.phone)}
-              helperText={props.formik.touched.phone && props.formik.errors.phone}
+              onBlur={props.formik.handleBlur}
+              error={props.formik.dirty && props.formik.touched.phone && Boolean(props.formik.errors.phone)}
+              helperText={props.formik.dirty && props.formik.touched.phone && props.formik.errors.phone}
             />
             {/* </form> */}
           </div>

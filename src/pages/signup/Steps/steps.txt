@@ -20,3 +20,5 @@ Step 4 -> Enviar Código de Confirmação Email
   Link de Reenvio
 
 Step 5 -> "Parabéns, conta criada. Proceda para o login" (FECHAR)
+
+MELHORIA -> NO EMAIL COM O CÓDIGO DE VERIFICAÇÃO, POSSUIR UM LINK DIRETO DE ATIVAÇÃO QUE REDIRECIONA PRO LOGIN APÓS ATIVAR A CONTA

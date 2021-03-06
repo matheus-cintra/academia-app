@@ -1,32 +1,17 @@
 import { Button, Grid, Grow, Link, Paper, TextField, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useStyles } from './styles';
-import { getMonth } from 'date-fns';
 import logo from '../../assets/images/logo.png';
 import * as yup from 'yup';
-import SignUpDialogComponent from '../../components/SignUpDialog';
+import SignUpDialogComponent from '../signup';
 import { useFormik } from 'formik';
 import { useAuth } from '../../contexts/auth';
+import getSeason from '../../utils/getSeason';
 
 const LoginComponent: React.FC = () => {
   const [open, setOpen] = useState(false);
   const context = useAuth();
-
-  const getSeason = () => {
-    const month = getMonth(Date.now());
-    if (month > 1 && month < 6) {
-      return 'fall';
-    } else if (month > 4 && month < 9) {
-      return 'winter';
-    } else if (month > 7 && month < 11) {
-      return 'spring';
-    } else {
-      return 'summer';
-    }
-  };
-
   const season: string = getSeason();
-
   const classes = useStyles({ season });
 
   const validationSchema = yup.object().shape({
@@ -43,11 +28,11 @@ const LoginComponent: React.FC = () => {
     onSubmit: values => handleSubmit(values),
   });
 
-  const handleClickOpen = () => {
+  const openSignUpDialog = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const closeSignUpDialog = () => {
     setOpen(false);
   };
 
@@ -64,7 +49,7 @@ const LoginComponent: React.FC = () => {
           <Typography component='h1' variant='h5'>
             Atlantis Gym
           </Typography>
-          <form className={classes.form} id='loginForm' name='loginForm' onSubmit={formik.handleSubmit}>
+          <form className={classes.form} id='loginForm' name='loginForm' onSubmit={formik.handleSubmit} noValidate>
             <TextField
               variant='outlined'
               margin='normal'
@@ -75,8 +60,9 @@ const LoginComponent: React.FC = () => {
               label='E-mail'
               value={formik.values.email}
               onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
+              onBlur={formik.handleBlur}
+              error={formik.dirty && formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.dirty && formik.touched.email && formik.errors.email}
               autoComplete='email'
               autoFocus
             />
@@ -92,8 +78,9 @@ const LoginComponent: React.FC = () => {
               autoComplete='current-password'
               value={formik.values.password}
               onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
+              onBlur={formik.handleBlur}
+              error={formik.dirty && formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.dirty && formik.touched.password && formik.errors.password}
             />
             <Grid container spacing={3}>
               <Grid item xs={6}>
@@ -107,7 +94,7 @@ const LoginComponent: React.FC = () => {
                   fullWidth
                   variant='contained'
                   color='secondary'
-                  onClick={handleClickOpen}
+                  onClick={openSignUpDialog}
                   className={classes.submit}
                 >
                   Criar Conta
@@ -124,8 +111,8 @@ const LoginComponent: React.FC = () => {
           </form>
         </div>
       </Grid>
-      <Grow in={open} mountOnEnter unmountOnExit timeout={2000} onEnter={(node: any) => console.warn(node)}>
-        <SignUpDialogComponent handleClose={handleClose} open={open} />
+      <Grow in={open} mountOnEnter unmountOnExit timeout={2000}>
+        <SignUpDialogComponent handleClose={closeSignUpDialog} open={open} />
       </Grow>
     </Grid>
   );

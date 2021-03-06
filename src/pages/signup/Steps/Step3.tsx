@@ -22,15 +22,9 @@ const Step3: any = (props: any) => {
     card: 'none',
   });
 
-  const handleChange = (type: string, event: any) => {
-    props.setState(type, event);
-  };
-
   const handleSubscriptionAdd = (type: string) => {
-    handleChange('subscription', { target: { value: type } });
     setSelectedCard({ card: type });
-    props.formik.setFieldValue('step3.subscription', type);
-    console.warn('props : ', props.formik);
+    props.formik.setFieldValue('subscription', type);
   };
 
   const plans = getMembershipTypes();
@@ -47,15 +41,13 @@ const Step3: any = (props: any) => {
                 className={classes.cardRoot}
                 style={{
                   opacity:
-                    (props.formik.values.step3.subscription !== '' &&
-                      props.formik.values.step3.subscription !== plan.key) ||
+                    (props.formik.values.subscription !== '' && props.formik.values.subscription !== plan.key) ||
                     (selectedCard.card !== 'none' && selectedCard.card !== plan.key) ||
                     !plan.enabled
                       ? 0.5
                       : 1,
                   border:
-                    (props.formik.values.step3.subscription !== '' &&
-                      props.formik.values.step3.subscription === plan.key) ||
+                    (props.formik.values.subscription !== '' && props.formik.values.subscription === plan.key) ||
                     selectedCard.card === plan.key
                       ? '3px solid #545585'
                       : undefined,

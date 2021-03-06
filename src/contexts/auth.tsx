@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { toast } from 'react-toastify';
+import { decode } from 'jsonwebtoken';
 
 interface AuthContextData {
   signed: boolean;
@@ -28,8 +29,19 @@ export const AuthProvider: React.FC = ({ children }) => {
     const storedToken = localStorage.getItem('@App:token');
 
     if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      api.defaults.headers.Authorization = `Bearer ${storedToken}`;
+      const currTime = new Date().getTime() / 1000;
+      const token = storedToken.split(' ');
+      const decoded: any = decode(token[0]);
+      const expired = decoded && currTime > decoded.exp;
+
+      if (expired) {
+        setUser(null);
+        sessionStorage.removeItem('@App:user');
+        sessionStorage.removeItem('App:token');
+      } else {
+        setUser(JSON.parse(storedUser));
+        api.defaults.headers.Authorization = `Bearer ${storedToken}`;
+      }
     }
   }, []);
 

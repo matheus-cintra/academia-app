@@ -31,5 +31,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     'react/prop-types': 'off',
+    'no-async-promise-executor': 'off',
   },
 };

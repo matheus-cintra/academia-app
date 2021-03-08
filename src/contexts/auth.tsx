@@ -8,6 +8,7 @@ interface AuthContextData {
   user: Record<string, unknown> | null;
 
   Login(data: ILoginData): Promise<void>;
+  Logout(): void;
 }
 
 interface ILoginData {
@@ -22,7 +23,7 @@ export function useAuth() {
 }
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUserData] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('@App:user');
@@ -35,11 +36,11 @@ export const AuthProvider: React.FC = ({ children }) => {
       const expired = decoded && currTime > decoded.exp;
 
       if (expired) {
-        setUser(null);
+        setUserData(null);
         sessionStorage.removeItem('@App:user');
         sessionStorage.removeItem('App:token');
       } else {
-        setUser(JSON.parse(storedUser));
+        setUserData(JSON.parse(storedUser));
         api.defaults.headers.Authorization = `Bearer ${storedToken}`;
       }
     }
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     try {
       const response = await api.post('/auth', { ...loginData });
       toast.success('Seja Bem-Vindo');
-      setUser(response.data.account);
+      setUserData(response.data.account);
       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
 
       localStorage.setItem('@App:user', JSON.stringify(response.data.account));
@@ -59,7 +60,15 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }
 
-  return <AuthContext.Provider value={{ signed: Boolean(user), user, Login }}>{children}</AuthContext.Provider>;
+  function Logout() {
+    console.warn('entrou no logout');
+    setUserData(null);
+
+    localStorage.removeItem('@App:user');
+    localStorage.removeItem('@App:token');
+  }
+
+  return <AuthContext.Provider value={{ signed: Boolean(user), user, Login, Logout }}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContext;

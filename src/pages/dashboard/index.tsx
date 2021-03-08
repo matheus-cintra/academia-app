@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => {
       height: 120,
       justifyContent: 'center',
       alignItems: 'center',
+      marginBottom: 24,
     },
     bullet: {
       display: 'inline-block',

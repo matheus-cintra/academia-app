@@ -6,8 +6,12 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 // export default api;
 
+const href = window.location.href;
+
+const URL = href.includes('localhost') ? 'http://localhost:4000' : 'https://atlantis-gym.herokuapp.com/';
+
 const api: AxiosInstance = axios.create({
-  baseURL: 'https://atlantis-gym.herokuapp.com/',
+  baseURL: URL,
 });
 
 const getDBData = async (apiPath: string, params?: any): Promise<AxiosResponse> => {

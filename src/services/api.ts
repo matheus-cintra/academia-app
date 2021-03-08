@@ -7,7 +7,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 // export default api;
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:4000',
+  baseURL: 'https://atlantis-gym.herokuapp.com/',
 });
 
 const getDBData = async (apiPath: string, params?: any): Promise<AxiosResponse> => {

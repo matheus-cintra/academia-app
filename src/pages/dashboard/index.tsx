@@ -57,7 +57,6 @@ const useStyles = makeStyles(theme => {
 
 const DashboardComponent: React.FC = () => {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
     <Container maxWidth='lg' style={{ border: '1px solid red' }}>

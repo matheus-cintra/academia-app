@@ -19,12 +19,13 @@
     "react-scripts": "4.0.3",
     "react-toastify": "^7.0.3",
     "typescript": "^4.1.5",
+    "uglify-js": "^3.13.0",
     "web-vitals": "^1.1.0",
     "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && npm run postbuild",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

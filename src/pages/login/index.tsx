@@ -42,8 +42,8 @@ const LoginComponent: React.FC = () => {
 
   return (
     <Grid container component='main' className={classes.root}>
-      <Grid item xs={false} sm={6} md={8} lg={9} className={classes.image} />
-      <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} className={classes.paperComponent} elevation={6} square>
+      <Grid item xs={false} sm={6} md={7} lg={8} className={classes.image} />
+      <Grid item xs={12} sm={6} md={5} lg={4} component={Paper} className={classes.paperComponent} elevation={6} square>
         <div className={classes.paper}>
           <img className={classes.logo} src={logo} alt='Logo Atlantis' />
           <Typography component='h1' variant='h5'>

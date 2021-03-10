@@ -5,6 +5,7 @@ import 'fontsource-roboto';
 import { CssBaseline } from '@material-ui/core';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 
 ReactDOM.render(
   // <React.StrictMode>

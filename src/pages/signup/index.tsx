@@ -75,7 +75,6 @@ const SignUpDialogComponent: any = (props: any) => {
   };
 
   const handleNext = () => {
-    console.warn('handleNext', isLoading);
     if (activeStep === steps.length - 1) return handleClose();
     setIsNext(true);
     setActiveStep(prevActiveStep => prevActiveStep + 1);

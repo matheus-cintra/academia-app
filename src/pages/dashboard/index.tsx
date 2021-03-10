@@ -1,238 +1,11 @@
-import { Card, CardContent, Container, Divider, Typography } from '@material-ui/core';
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { AccountCircle } from '@material-ui/icons';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
-import 'react-perfect-scrollbar/dist/css/styles.css';
+import React, { useEffect, useState } from 'react';
+import { Card, CardContent, Container, Divider, Paper, Typography } from '@material-ui/core';
+import { AccountBalance, AccountCircle, Receipt } from '@material-ui/icons';
+import { DataGrid } from '@material-ui/data-grid';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-const useStyles = makeStyles(theme => {
-  return {
-    rootContainer: {
-      height: 'calc(100vh - 64px)',
-      '& .hideHeaderClass': {
-        [theme.breakpoints.down('xs')]: {
-          display: 'none',
-        },
-      },
-      '& .hideCellClass': {
-        [theme.breakpoints.down('xs')]: {
-          display: 'none',
-        },
-      },
-      '& .headerClass': {
-        [theme.breakpoints.down('md')]: {
-          minWidth: '100px!important',
-          maxWidth: '100px!important',
-        },
-      },
-      '& .cellClass': {
-        [theme.breakpoints.down('md')]: {
-          minWidth: '100px!important',
-          maxWidth: '100px!important',
-        },
-      },
-      '& .MuiDataGrid-colCellTitle': {
-        fontWeight: 600,
-      },
-      '& .MuiDataGrid-window': {
-        overflowX: 'hidden',
-      },
-    },
-    root: {
-      display: 'flex',
-      minWidth: 275,
-      height: 120,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    bullet: {
-      display: 'inline-block',
-      margin: '0 2px',
-      transform: 'scale(0.8)',
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 600,
-    },
-    pos: {
-      marginBottom: 12,
-    },
-    cardContainer: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      margin: '32px 0',
-
-      [theme.breakpoints.down('md')]: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-      },
-      [theme.breakpoints.up('sm')]: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-      },
-    },
-    cardContent: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    typographyContent: {
-      padding: 24,
-    },
-    typographySubtitle: {
-      color: '#A6ACBE',
-    },
-    titleComponent: {
-      padding: 12,
-    },
-    membersList: {
-      flexDirection: 'column',
-    },
-  };
-});
-
-const headers: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70, headerClassName: 'hideHeaderClass', cellClassName: 'hideCellClass' },
-  {
-    field: 'name',
-    headerName: 'Nome',
-    width: 200,
-    flex: 1,
-    headerClassName: 'headerClass',
-    cellClassName: 'cellClass',
-  },
-  {
-    field: 'plano',
-    headerName: 'Plano',
-    width: 100,
-    flex: 1,
-    headerClassName: 'hideHeaderClass',
-    cellClassName: 'hideCellClass',
-  },
-  {
-    field: 'valor',
-    headerName: 'Valor',
-    width: 100,
-    flex: 1,
-    headerClassName: 'headerClass',
-    cellClassName: 'cellClass',
-  },
-  {
-    field: 'vencimento',
-    headerName: 'Vencimento',
-    width: 130,
-    flex: 1,
-    headerClassName: 'hideHeaderClass',
-    cellClassName: 'hideCellClass',
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    flex: 1,
-    headerClassName: 'headerClass',
-    cellClassName: 'cellClass',
-    renderCell: (params: GridCellParams) =>
-      params.value === 'PAID' ? (
-        <>
-          <CheckCircleIcon color={'primary'} style={{ width: '1em' }} />
-        </>
-      ) : (
-        <>
-          <IndeterminateCheckBoxIcon color={'error'} style={{ width: '1em' }} />
-        </>
-      ),
-  },
-];
-
-const alunos: any[] = [
-  {
-    id: 1,
-    name: 'Matheus Cintra',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '13/03/2021',
-    status: 'PENDING',
-  },
-  {
-    id: 2,
-    name: 'Jean Sido',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '02/03/2021',
-    status: 'PAID',
-  },
-  {
-    id: 3,
-    name: 'Marcio Junior',
-    plano: 'Trimestral',
-    valor: 'R$180,00',
-    vencimento: '09/03/2021',
-    status: 'PENDING',
-  },
-  {
-    id: 4,
-    name: 'Murilo Rabelo',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '05/03/2021',
-    status: 'PAID',
-  },
-  {
-    id: 5,
-    name: 'Lucas Romão',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '12/03/2021',
-    status: 'PENDING',
-  },
-  {
-    id: 6,
-    name: 'Matheus Cintra',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '13/03/2021',
-    status: 'PENDING',
-  },
-  {
-    id: 7,
-    name: 'Jean Sido',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '02/03/2021',
-    status: 'PAID',
-  },
-  {
-    id: 8,
-    name: 'Marcio Junior',
-    plano: 'Trimestral',
-    valor: 'R$180,00',
-    vencimento: '09/03/2021',
-    status: 'PENDING',
-  },
-  {
-    id: 9,
-    name: 'Murilo Rabelo',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '05/03/2021',
-    status: 'PAID',
-  },
-  {
-    id: 10,
-    name: 'Lucas Romão',
-    plano: 'Mensal',
-    valor: 'R$75,00',
-    vencimento: '12/03/2021',
-    status: 'PENDING',
-  },
-];
+import useStyles from './styles';
+import headers from './gridDataDefinition';
+import { getUser } from './users';
 
 const handleRowSelect = (param: any) => {
   console.warn('params > ', param);
@@ -245,10 +18,23 @@ const handleRowSelect = (param: any) => {
 
 const DashboardComponent: React.FC = () => {
   const classes = useStyles();
+  const [members, setMembers] = useState([]);
+  const [loading, setIsLoading] = useState(false);
+
+  const retrieveMembers = async (): Promise<void> => {
+    const membersDb: any = await getUser();
+    setMembers(membersDb);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    retrieveMembers().then(x => x);
+  }, []);
 
   return (
     <Container maxWidth='lg' className={classes.rootContainer}>
-      <div className={classes.titleComponent}>
+      <div>
         <Typography variant='h5' className={classes.title}>
           Dashboard
         </Typography>
@@ -274,7 +60,7 @@ const DashboardComponent: React.FC = () => {
 
         <Card className={classes.root}>
           <CardContent className={classes.cardContent}>
-            <ReceiptIcon fontSize={'large'} />
+            <Receipt fontSize={'large'} />
             <div className={classes.typographyContent}>
               <Typography variant='h5' component='h2'>
                 32
@@ -288,7 +74,7 @@ const DashboardComponent: React.FC = () => {
 
         <Card className={classes.root}>
           <CardContent className={classes.cardContent}>
-            <AccountBalanceIcon fontSize={'large'} />
+            <AccountBalance fontSize={'large'} />
             <div className={classes.typographyContent}>
               <Typography variant='h5' component='h2'>
                 R$ 9.854.32
@@ -307,11 +93,12 @@ const DashboardComponent: React.FC = () => {
         </Typography>
       </div>
 
-      <div style={{ height: 400, width: '100%', paddingBottom: '32px' }}>
+      <Paper style={{ height: 400, width: '100%' }}>
         <PerfectScrollbar options={{ suppressScrollX: true }}>
           <DataGrid
             density={'comfortable'}
-            rows={alunos}
+            rows={members}
+            loading={loading}
             columns={headers}
             pageSize={10}
             autoHeight={true}
@@ -323,7 +110,7 @@ const DashboardComponent: React.FC = () => {
             onRowSelected={param => handleRowSelect(param)}
           />
         </PerfectScrollbar>
-      </div>
+      </Paper>
     </Container>
   );
 };

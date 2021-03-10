@@ -36,6 +36,7 @@ export const useStyles = makeStyles(theme => ({
   paperComponent: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   avatar: {
     margin: theme.spacing(1),

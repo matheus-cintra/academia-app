@@ -1,9 +1,10 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useAuth } from '../contexts/auth';
 import ApplicationBar from '../components/AppBar';
+import LoginComponent from '../pages/login';
+import { useAuth } from '../contexts/auth';
 
-export default function RouteWrapper({ component: Component, isPrivate, ...rest }: any) {
+const RouteWrapper = ({ component: Component, isPrivate, ...rest }: any) => {
   const { signed } = useAuth();
 
   if (!signed && isPrivate) {
@@ -24,9 +25,14 @@ export default function RouteWrapper({ component: Component, isPrivate, ...rest 
             <Component {...props} />
           </React.Fragment>
         ) : (
-          <Component {...props} />
+          <>
+            <Redirect to='/' />
+            <LoginComponent />
+          </>
         )
       }
     />
   );
-}
+};
+
+export default RouteWrapper;

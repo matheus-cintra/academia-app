@@ -1,28 +1,9 @@
 import React from 'react';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { SwipeableDrawer } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: 'auto',
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-}));
+import { NavLink } from 'react-router-dom';
+import { IconButton, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer } from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
+import useStyles from './styles';
+import sidenavRoutes from './routesDefinition';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -35,45 +16,20 @@ export default function SwipeableTemporaryDrawer() {
     right: false,
   });
 
-  const toggleDrawer = (anchor: Anchor, open: boolean) => {
-    // console.warn('chegou no toggleDrawer');
-    //=> (event: React.KeyboardEvent | React.MouseEvent)
-    // if (
-    //   event &&
-    //   event.type === 'keydown' &&
-    //   ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
-    // ) {
-    //   return;
-    // }
-
-    console.warn('chegou aqui');
-
-    setState({ ...state, [anchor]: open });
-  };
+  const toggleDrawer = (anchor: Anchor, open: boolean) => setState({ ...state, [anchor]: open });
 
   const list = (anchor: Anchor) => (
     <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
-      })}
+      className={classes.list}
       role='presentation'
       onClick={() => toggleDrawer(anchor, false)}
       onKeyDown={() => toggleDrawer(anchor, false)}
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
+        {sidenavRoutes.map(route => (
+          <ListItem button key={route.key} component={NavLink} to={route.path}>
+            <ListItemIcon>{route.icon}</ListItemIcon>
+            <ListItemText primary={route.name} />
           </ListItem>
         ))}
       </List>
@@ -89,7 +45,7 @@ export default function SwipeableTemporaryDrawer() {
         color='inherit'
         aria-label='menu'
       >
-        <MenuIcon />
+        <Menu />
       </IconButton>
       <SwipeableDrawer
         anchor={'left'}

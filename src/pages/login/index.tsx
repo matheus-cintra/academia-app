@@ -63,6 +63,7 @@ const LoginComponent: React.FC = () => {
                 id='email'
                 name='email'
                 label='E-mail'
+                type='email'
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

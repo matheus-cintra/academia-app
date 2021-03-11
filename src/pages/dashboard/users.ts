@@ -1,6 +1,6 @@
 const alunos: any[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Matheus Cintra',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -8,7 +8,7 @@ const alunos: any[] = [
     status: 'PENDING',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Jean Sido',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -16,7 +16,7 @@ const alunos: any[] = [
     status: 'PAID',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Marcio Junior',
     plano: 'Trimestral',
     valor: 'R$180,00',
@@ -24,7 +24,7 @@ const alunos: any[] = [
     status: 'PENDING',
   },
   {
-    id: 4,
+    id: '4',
     name: 'Murilo Rabelo',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -32,7 +32,7 @@ const alunos: any[] = [
     status: 'PAID',
   },
   {
-    id: 5,
+    id: '5',
     name: 'Lucas Romão',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -40,7 +40,7 @@ const alunos: any[] = [
     status: 'PENDING',
   },
   {
-    id: 6,
+    id: '6',
     name: 'Matheus Cintra',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -48,7 +48,7 @@ const alunos: any[] = [
     status: 'PENDING',
   },
   {
-    id: 7,
+    id: '7',
     name: 'Jean Sido',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -56,7 +56,7 @@ const alunos: any[] = [
     status: 'PAID',
   },
   {
-    id: 8,
+    id: '8',
     name: 'Marcio Junior',
     plano: 'Trimestral',
     valor: 'R$180,00',
@@ -64,7 +64,7 @@ const alunos: any[] = [
     status: 'PENDING',
   },
   {
-    id: 9,
+    id: '9',
     name: 'Murilo Rabelo',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -72,7 +72,7 @@ const alunos: any[] = [
     status: 'PAID',
   },
   {
-    id: 10,
+    id: '10',
     name: 'Lucas Romão',
     plano: 'Mensal',
     valor: 'R$75,00',
@@ -84,5 +84,14 @@ const alunos: any[] = [
 export const getUser = async (): Promise<any> => {
   return await new Promise(resolve => {
     setTimeout(() => resolve(alunos), 2000);
+  });
+};
+
+export const getMemberByd = async (id: string): Promise<any> => {
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      const member = alunos.find(x => x.id === id);
+      resolve(member);
+    }, 2000);
   });
 };

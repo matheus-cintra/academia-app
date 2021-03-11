@@ -105,6 +105,7 @@ const DashboardComponent: React.FC = () => {
             checkboxSelection
             hideFooterRowCount
             hideFooterPagination
+            disableSelectionOnClick
             hideFooter
             hideFooterSelectedRowCount
             onRowSelected={param => handleRowSelect(param)}

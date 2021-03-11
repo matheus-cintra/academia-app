@@ -3,9 +3,14 @@ import { Redirect, Route } from 'react-router-dom';
 import ApplicationBar from '../components/AppBar';
 import LoginComponent from '../pages/login';
 import { useAuth } from '../contexts/auth';
+import { CircularProgress } from '@material-ui/core';
 
 const RouteWrapper = ({ component: Component, isPrivate, ...rest }: any) => {
-  const { signed } = useAuth();
+  const { signed, isWaiting } = useAuth();
+
+  if (isWaiting) {
+    return <CircularProgress size={64} />;
+  }
 
   if (!signed && isPrivate) {
     return <Redirect to='/' />;

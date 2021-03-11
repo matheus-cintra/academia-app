@@ -83,6 +83,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
   async function handleGetMember() {
     const memberId = props.match.params.id;
     const settings: any = localStorage.getItem('@App:settings');
+    console.warn('member > ', member);
 
     setSettings(JSON.parse(settings));
     if (memberId !== 'new') {

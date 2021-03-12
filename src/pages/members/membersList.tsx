@@ -1,22 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Container, Divider, IconButton, Typography } from '@material-ui/core';
+import {
+  CircularProgress,
+  Container,
+  Divider,
+  IconButton,
+  Paper,
+  TablePagination,
+  Typography,
+} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NoRegisterComponent from '../../components/NoRegister';
+import { api } from '../../services/api';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      padding: 0,
+      // padding: '0 0 24px',
       // backgroundColor: theme.palette.background.paper,
-      height: 'calc(100vh - 220px)',
+      // height: 'calc(100vh - 220px)',
       borderRadius: 4,
       boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     },
@@ -46,60 +55,47 @@ const useStyles = makeStyles((theme: Theme) =>
       color: '#A6ACBE',
     },
     listItemBlock: {},
+    paperLoading: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+    },
   })
 );
-
-const alunos: any[] = [
-  {
-    id: '1',
-    name: 'Matheus Bao de Oliveira Cintra',
-    nascimento: '14/05/1996',
-    plano: 'MENSAL',
-    status: 'ATIVO',
-    telefone: '(19) 9 8172-0118',
-    email: 'matheus_cintra@hotmail.com',
-  },
-  {
-    id: '2',
-    name: 'Matheus Bao de Oliveira Cintra',
-    nascimento: '14/05/1996',
-    plano: 'MENSAL',
-    status: 'ATIVO',
-    telefone: '(19) 9 8172-0118',
-    email: 'matheus_cintra@hotmail.com',
-  },
-  {
-    id: '3',
-    name: 'Matheus Bao de Oliveira Cintra',
-    nascimento: '14/05/1996',
-    plano: 'MENSAL',
-    status: 'ATIVO',
-    telefone: '(19) 9 8172-0118',
-    // email: 'matheus_cintra@hotmail.com',
-  },
-  {
-    id: '4',
-    name: 'Matheus Bao de Oliveira Cintra',
-    nascimento: '14/05/1996',
-    plano: 'MENSAL',
-    status: 'ATIVO',
-    telefone: '(19) 9 8172-0118',
-    email: 'matheus_cintra@hotmail.com',
-  },
-  {
-    id: '5',
-    name: 'Matheus Bao de Oliveira Cintra',
-    nascimento: '14/05/1996',
-    plano: 'MENSAL',
-    status: 'ATIVO',
-    telefone: '(19) 9 8172-0118',
-    // email: 'matheus_cintra@hotmail.com',
-  },
-];
 
 const MembersList: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [members, setMembers] = useState<any>([]);
+
+  async function getMemberList() {
+    try {
+      const result = await api.get('/members/list');
+      setMembers(result.data);
+    } catch (error) {
+      console.warn('erro > ', error.response);
+    }
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    getMemberList().then(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  const handleChangePage = (event: any, newPage: any) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const handleNavigate = (memberId?: string) => {
     return history.push(`members/${memberId ? memberId : 'new'}`);
@@ -123,27 +119,39 @@ const MembersList: React.FC = () => {
         </div>
       </div>
       <List className={classes.root}>
-        {alunos.length > 0 ? (
-          alunos.map(aluno => {
+        {isLoading ? (
+          <Paper elevation={3} className={classes.paperLoading}>
+            <CircularProgress />
+          </Paper>
+        ) : members.length > 0 ? (
+          members.map((member: any) => {
             return (
-              <React.Fragment key={aluno.id}>
-                <ListItem button onClick={() => handleNavigate(aluno.id)}>
+              <div key={member._id}>
+                <ListItem button onClick={() => handleNavigate(member._id)}>
                   <ListItemAvatar>
-                    <Avatar alt={aluno.name.charAt(0)} src={`/static/images/avatar/${aluno.name + 1}.jpg`} />
+                    <Avatar alt={member.name.charAt(0)} src={`/static/images/avatar/${member.name + 1}.jpg`} />
                   </ListItemAvatar>
                   <div className={classes.listItemBlock}>
-                    <ListItemText id={aluno.name} primary={aluno.name} />
-                    <ListItemText id={aluno.name} secondary={aluno.email ? aluno.email : aluno.telefone} />
+                    <ListItemText id={member.name} primary={member.name} />
+                    <ListItemText id={member.name} secondary={member.email ? member.email : member.telefone} />
                   </div>
                 </ListItem>
                 <Divider />
-              </React.Fragment>
+              </div>
             );
           })
         ) : (
           <NoRegisterComponent />
         )}
       </List>
+      <TablePagination
+        component='div'
+        count={100}
+        page={page}
+        onChangePage={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </Container>
   );
 };

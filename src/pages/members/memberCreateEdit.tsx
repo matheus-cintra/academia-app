@@ -15,8 +15,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useFormik } from 'formik';
-import { getMemberByd } from '../dashboard/users';
 import { api } from '../../services/api';
+import { format, parseISO, endOfDay, addHours } from 'date-fns';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,26 +80,19 @@ const MembersCreateEdit: React.FC = (props: any) => {
   const [settings, setSettings] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const user: any = localStorage.getItem('@App:user');
+  let memberId = props.match.params.id !== 'new' ? props.match.params.id : undefined;
 
   async function handleGetMember() {
-    const memberId = props.match.params.id;
     const settings: any = localStorage.getItem('@App:settings');
-    console.warn('member > ', member);
 
     setSettings(JSON.parse(settings));
-    if (memberId !== 'new') {
-      let member = await getMemberByd(memberId);
-      member = {
-        ...member,
-        birthDate: '14/05/1996',
-        document: '45324390860',
-        email: 'matheus_cintra@hotmail.com',
-        phone: '19981720118',
-      };
-      console.warn('member > ', member);
+
+    if (memberId) {
+      const result = await api.get(`/members/${memberId}`);
+      result.data.birthDate = format(endOfDay(parseISO(result.data.birthDate)), 'yyyy-MM-dd');
       if (member) {
         setMember(member);
-        await formik.setValues({ ...member });
+        await formik.setValues({ ...result.data });
       }
     }
   }
@@ -108,7 +102,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
     handleGetMember().then(() => {
       setIsLoading(false);
     });
-  }, [props]);
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -128,12 +122,27 @@ const MembersCreateEdit: React.FC = (props: any) => {
 
   const handleSubmit = async (values: any) => {
     try {
-      Object.assign(values, { subscriptionId: JSON.parse(user)._id });
-      console.warn('API > ', api.defaults);
-      console.warn('VALUES > ', values);
-      const result = await api.post('/members/create', { ...values });
-      console.warn('result > ', result);
+      Object.assign(values, {
+        subscriptionId: JSON.parse(user)._id,
+        birthDate: addHours(parseISO(values.birthDate), 6),
+      });
+      const result = memberId
+        ? await api.put(`/members/update-member/${memberId}`, { ...values })
+        : await api.post('/members/create', { ...values });
+
+      result.data.birthDate = format(endOfDay(parseISO(result.data.birthDate)), 'yyyy-MM-dd');
+      formik.values.birthDate = result.data.birthDate;
+
+      memberId ? toast.success('Atualizado com sucesso') : toast.success('Criado com sucesso');
+
+      if (!memberId) {
+        console.warn('entrou aqui...');
+
+        history.replaceState({}, '', result.data._id);
+        memberId = result.data._id;
+      }
     } catch (e) {
+      toast.error(e.response.data.message[0]);
       console.warn('e > ', e.response);
     }
   };

@@ -14,7 +14,6 @@ const LoginComponent: React.FC = () => {
   const context = useAuth();
   const season: string = getSeason();
   const classes = useStyles({ season });
-
   const validationSchema = yup.object().shape({
     email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
     password: yup.string().required('Campo obrigatório'),

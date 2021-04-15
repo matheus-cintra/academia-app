@@ -22,6 +22,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUserData] = useState(null);
+  // const [loginError, setLoginError] = useState(false);
   const [isWaiting, setIsWaiting] = useState(true);
 
   useEffect(() => {
@@ -51,14 +52,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   async function Login(loginData: ILoginData, funcParam: any) {
     try {
       const response = await api.post('/auth', { ...loginData });
-
-      console.warn('response > ', response);
-
       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
       api.defaults.headers['account-id'] = response.data.account._id;
 
       const resSettings = await api.get(`/settings/${response.data.account._id}`);
-      console.warn('settings > ', resSettings);
       funcParam && funcParam();
       toast.success('Seja Bem-Vindo');
       setUserData(response.data.account);
@@ -68,7 +65,10 @@ export const AuthProvider: React.FC = ({ children }) => {
       localStorage.setItem('@App:settings', JSON.stringify(resSettings.data));
       setIsWaiting(false);
     } catch (e) {
+      setIsWaiting(false);
+      funcParam(false);
       toast.error(e.response.data.message[0]);
+      // setLoginError(true);
     }
   }
 

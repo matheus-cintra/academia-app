@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => {
   return {
     rootContainer: {
-      height: 'calc(100vh - 64px)',
+      // height: 'calc(100vh - 64px)',
       padding: theme.spacing(4),
       '& .hideHeaderClass': {
         [theme.breakpoints.down('xs')]: {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
   Button,
   CircularProgress,
   Container,
   Divider,
   FormControl,
+  FormHelperText,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Paper,
@@ -15,90 +16,62 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useFormik } from 'formik';
-import { getMemberByd } from '../dashboard/users';
 import { api } from '../../services/api';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    rootContainer: {
-      height: 'calc(100vh - 64px)',
-      padding: theme.spacing(4),
-      '& .MuiSelect-select:focus': {
-        backgroundColor: '#FFF!important',
-      },
-    },
-    titleComponent: {
-      padding: '16px 0',
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 600,
-    },
-    titleInsideForm: {
-      fontSize: 16,
-      fontWeight: 600,
-      color: '#A99E9E',
-      marginBottom: 12,
-      marginTop: 12,
-    },
-    typographySubtitle: {
-      color: '#A6ACBE',
-      marginBottom: 12,
-    },
-    form: {
-      padding: theme.spacing(4),
-    },
-    row: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    mLeft: {
-      marginLeft: 5,
-    },
-    mRight: {
-      marginRight: 5,
-    },
-    divider: {
-      margin: '24px 0',
-    },
-    paperLoading: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '300px',
-    },
-    formControl: {
-      width: '100%',
-    },
-  })
-);
+import { getDataById } from '../../common/dbMethods';
+import { toast } from 'react-toastify';
+import { useStylesCreateEditPage } from './styles';
+import { decorateMember } from './decorator';
+import { useHistory } from 'react-router-dom';
+import * as yup from 'yup';
+import { ArrowBack } from '@material-ui/icons';
 
 const MembersCreateEdit: React.FC = (props: any) => {
-  const classes = useStyles();
-  const [member, setMember] = useState({});
+  const classes = useStylesCreateEditPage();
+  const [member, setMember] = useState<any>({});
   const [settings, setSettings] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const user: any = localStorage.getItem('@App:user');
+  const history = useHistory();
+
+  const validationSchema = yup.object().shape(
+    {
+      name: yup.string().required('Nome é obrigatório'),
+      email: yup
+        .string()
+        .email('Email Inválido')
+        .when('phone', {
+          is: (phone: string) => !phone || phone.length === 0,
+          then: yup.string().email('Email Inválido').required('Email Obrigatório'),
+          otherwise: yup.string(),
+        }),
+      phone: yup.string().when('email', {
+        is: (email: string) => !email || email.length === 0,
+        then: yup.string().required('Telefone Obrigatório'),
+        otherwise: yup.string(),
+      }),
+      birthDate: yup.string(),
+      document: yup.string().required('Documento é obrigatório'),
+      genre: yup.string(),
+      dueDay: yup.string().required('Data de Vencimento é obrigatório'),
+      paymentMethodId: yup.string().required('Modo de Pagamento é obrigatório'),
+      membershipMethodId: yup.string().required('Tipo de Plano é obrigatório'),
+    },
+    [['email', 'phone']]
+  );
 
   async function handleGetMember() {
     const memberId = props.match.params.id;
     const settings: any = localStorage.getItem('@App:settings');
-    console.warn('member > ', member);
 
     setSettings(JSON.parse(settings));
     if (memberId !== 'new') {
-      let member = await getMemberByd(memberId);
-      member = {
-        ...member,
-        birthDate: '14/05/1996',
-        document: '45324390860',
-        email: 'matheus_cintra@hotmail.com',
-        phone: '19981720118',
-      };
-      console.warn('member > ', member);
-      if (member) {
-        setMember(member);
-        await formik.setValues({ ...member });
+      const member = await getDataById('members', memberId);
+
+      decorateMember(member.data);
+
+      if (member.status === 200) {
+        setMember(member.data);
+        await formik.setValues({ ...member.data });
       }
     }
   }
@@ -122,39 +95,72 @@ const MembersCreateEdit: React.FC = (props: any) => {
       paymentMethodId: '',
       membershipMethodId: '',
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: values => handleSubmit(values),
   });
 
   const handleSubmit = async (values: any) => {
     try {
+      const data: any = {};
       Object.assign(values, { subscriptionId: JSON.parse(user)._id });
-      console.warn('API > ', api.defaults);
-      console.warn('VALUES > ', values);
-      const result = await api.post('/members/create', { ...values });
-      console.warn('result > ', result);
+
+      for (const value in values) {
+        data[value] = values[value] !== '' ? values[value] : undefined;
+      }
+
+      member._id
+        ? await api.put(`/members/update-member/${member._id}`, { ...data })
+        : await api.post('/members/create', { ...data });
+
+      member._id ? toast.success('Registro Alterado') : toast.success('Registro Criado');
+
+      if (!member._id) {
+        history.push('/members');
+      }
     } catch (e) {
-      console.warn('e > ', e.response);
+      toast.success(e.response.data.message);
     }
+  };
+
+  const handleNavigate = () => {
+    return history.push('/members');
   };
 
   return (
     <Container maxWidth='lg' className={classes.rootContainer}>
       <div className={classes.titleComponent}>
-        <Typography variant='h5' className={classes.title}>
-          Criação de Alunos
-        </Typography>
+        <div className={classes.titleContent}>
+          <IconButton
+            aria-label='account of current user'
+            aria-controls='menu-appbar'
+            aria-haspopup='true'
+            onClick={handleNavigate}
+            color='inherit'
+          >
+            <ArrowBack style={{ fontSize: 32 }} />
+          </IconButton>
+          <Typography variant='h5' className={classes.title}>
+            Criação de Alunos
+          </Typography>
+        </div>
         <Typography variant='subtitle1' className={classes.typographySubtitle}>
           Mecca Gym
         </Typography>
       </div>
+
       {isLoading ? (
         <Paper elevation={3} className={classes.paperLoading}>
           <CircularProgress />
         </Paper>
       ) : (
         <Paper elevation={3}>
-          <form className={classes.form} id='loginForm' name='loginForm' onSubmit={formik.handleSubmit} noValidate>
+          <form
+            className={classes.form}
+            id='createMember'
+            name='createMember'
+            onSubmit={formik.handleSubmit}
+            noValidate
+          >
             <Typography variant='h5' className={classes.titleInsideForm}>
               Dados Básicos
             </Typography>
@@ -172,6 +178,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   autoFocus
                   value={formik.values.name}
                   onChange={formik.handleChange}
+                  error={formik.touched.name && Boolean(formik.errors.name)}
+                  helperText={formik.touched.name && formik.errors.name}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={2}>
@@ -179,7 +187,6 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   InputLabelProps={{ shrink: true }}
                   variant='outlined'
                   fullWidth
-                  required
                   id='birthDate'
                   name='birthDate'
                   label='Nascimento'
@@ -191,10 +198,10 @@ const MembersCreateEdit: React.FC = (props: any) => {
               </Grid>
               <Grid item xs={12} sm={6} md={2}>
                 <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='demo-simple-select-outlined-label'>Sexo</InputLabel>
+                  <InputLabel id='genreSelectLabel'>Sexo</InputLabel>
                   <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
+                    labelId='genreSelectLabel'
+                    id='genreSelect'
                     value={formik.values.genre || ''}
                     onChange={e => e.target.value !== undefined && formik.setFieldValue('genre', e.target.value)}
                     label='Sexo'
@@ -216,6 +223,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   autoComplete='document'
                   value={formik.values.document}
                   onChange={formik.handleChange}
+                  error={formik.touched.document && Boolean(formik.errors.document)}
+                  helperText={formik.touched.document && formik.errors.document}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -230,6 +239,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   autoComplete='email'
                   value={formik.values.email}
                   onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -244,6 +255,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   autoComplete='phone'
                   value={formik.values.phone}
                   onChange={formik.handleChange}
+                  error={formik.touched.phone && Boolean(formik.errors.phone)}
+                  helperText={formik.touched.phone && formik.errors.phone}
                 />
               </Grid>
             </Grid>
@@ -254,10 +267,10 @@ const MembersCreateEdit: React.FC = (props: any) => {
             <Grid container spacing={2} style={{ marginTop: 24 }}>
               <Grid item xs={12} md={4}>
                 <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='demo-simple-select-outlined-label'>Forma de Pagamento</InputLabel>
+                  <InputLabel id='paymentMethodSelectLabel'>Forma de Pagamento</InputLabel>
                   <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
+                    labelId='paymentMethodSelectLabel'
+                    id='paymentMethodSelect'
                     value={formik.values.paymentMethodId || ''}
                     onChange={e =>
                       e.target.value !== undefined && formik.setFieldValue('paymentMethodId', e.target.value)
@@ -272,17 +285,19 @@ const MembersCreateEdit: React.FC = (props: any) => {
                         </MenuItem>
                       ))}
                   </Select>
+                  {formik.touched.paymentMethodId && Boolean(formik.errors.paymentMethodId) && (
+                    <FormHelperText error>{formik.errors.paymentMethodId}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='demo-simple-select-outlined-label'>Plano Escolhido</InputLabel>
+                  <InputLabel id='membershipMethodSelectLabel'>Plano Escolhido</InputLabel>
                   <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
+                    labelId='membershipMethodSelectLabel'
+                    id='membershipMethodSelect'
                     value={formik.values.membershipMethodId || ''}
                     onChange={e => {
-                      console.warn('e > ', e);
                       e.target.value !== undefined && formik.setFieldValue('membershipMethodId', e.target.value);
                     }}
                     label='Plano Escolhido'
@@ -295,6 +310,9 @@ const MembersCreateEdit: React.FC = (props: any) => {
                         </MenuItem>
                       ))}
                   </Select>
+                  {formik.touched.membershipMethodId && Boolean(formik.errors.membershipMethodId) && (
+                    <FormHelperText error>{formik.errors.membershipMethodId}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -319,7 +337,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant='contained' color='secondary'>
+                <Button variant='contained' color='secondary' onClick={handleNavigate}>
                   Cancelar
                 </Button>
               </Grid>

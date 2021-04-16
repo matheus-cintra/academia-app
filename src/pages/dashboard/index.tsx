@@ -1,36 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Container, Divider, Paper, Typography } from '@material-ui/core';
+import { Card, CardContent, Container, Typography } from '@material-ui/core';
 import { AccountBalance, AccountCircle, Receipt } from '@material-ui/icons';
-import { DataGrid } from '@material-ui/data-grid';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import useStyles from './styles';
-import headers from './gridDataDefinition';
-import { getUser } from './users';
+import { api } from '../../services/api';
 
-const handleRowSelect = (param: any) => {
-  console.warn('params > ', param);
-  /*
-   *   - Clicar na row ira ativar um useState pra salvar ou remover a row do estado.
-   *   - Se houver 1 ou mais registro no estado exibe botão de notificação
-   *   - Ao clicar no botão de noticiação, enviar email para todos os alunos
-   *  */
-};
+// const handleRowSelect = (param: any) => {
+//   console.warn('params > ', param);
+//   /*
+//    *   - Clicar na row ira ativar um useState pra salvar ou remover a row do estado.
+//    *   - Se houver 1 ou mais registro no estado exibe botão de notificação
+//    *   - Ao clicar no botão de noticiação, enviar email para todos os alunos
+//    *  */
+// };
 
 const DashboardComponent: React.FC = () => {
   const classes = useStyles();
-  const [members, setMembers] = useState([]);
-  const [loading, setIsLoading] = useState(false);
+  // const [members, setMembers] = useState([]);
+  // const [loading, setIsLoading] = useState(false);
 
-  const retrieveMembers = async (): Promise<void> => {
-    const membersDb: any = await getUser();
-    setMembers(membersDb);
-    setIsLoading(false);
-  };
+  // const retrieveMembers = async (): Promise<void> => {
+  //   const result = await api.get('/members/list');
 
-  useEffect(() => {
-    setIsLoading(true);
-    retrieveMembers().then(x => x);
-  }, []);
+  //   // const members = result.data.map((member: any) => {
+  //   //   return {
+  //   //     ...member,
+  //   //     id: member._id
+  //   //       .toString()
+  //   //       .slice(member._id.length - 5, member._id.length)
+  //   //       .toUpperCase(),
+  //   //   };
+  //   // });
+
+  //   console.warn('members > ', result);
+
+  //   setMembers(members);
+  //   setIsLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   retrieveMembers();
+  // }, []);
 
   return (
     <Container maxWidth='lg' className={classes.rootContainer}>
@@ -86,7 +96,7 @@ const DashboardComponent: React.FC = () => {
           </CardContent>
         </Card>
       </Container>
-      <Divider />
+      {/* <Divider />
       <div className={classes.titleComponent}>
         <Typography variant='h5' className={classes.title}>
           Próximos 10 vencimentos
@@ -111,7 +121,7 @@ const DashboardComponent: React.FC = () => {
             onRowSelected={param => handleRowSelect(param)}
           />
         </PerfectScrollbar>
-      </Paper>
+      </Paper> */}
     </Container>
   );
 };

@@ -5,7 +5,7 @@ import { AccountCircle, CheckCircle, IndeterminateCheckBox, MoreVert, Notificati
 import { useHistory } from 'react-router-dom';
 
 const headers: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70, headerClassName: 'hideHeaderClass', cellClassName: 'hideCellClass' },
+  { field: 'id', headerName: 'ID', width: 100, headerClassName: 'hideHeaderClass', cellClassName: 'hideCellClass' },
   {
     field: 'name',
     headerName: 'Nome',
@@ -15,12 +15,13 @@ const headers: GridColDef[] = [
     cellClassName: 'cellClass',
   },
   {
-    field: 'plano',
+    field: 'membership._id',
     headerName: 'Plano',
     width: 100,
     flex: 1,
     headerClassName: 'hideHeaderClass',
     cellClassName: 'hideCellClass',
+    renderCell: (params: GridCellParams) => <span>{params.row.membership.name}</span>,
   },
   {
     field: 'valor',

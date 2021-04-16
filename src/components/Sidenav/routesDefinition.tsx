@@ -1,4 +1,12 @@
-import { AccountBalance, AccountCircle, LocalOffer, Receipt, ShoppingCart, Dashboard } from '@material-ui/icons';
+import {
+  AccountBalance,
+  AccountCircle,
+  LocalOffer,
+  Receipt,
+  ShoppingCart,
+  Dashboard,
+  Settings,
+} from '@material-ui/icons';
 import React, { ReactElement } from 'react';
 
 interface IRoute {
@@ -44,6 +52,12 @@ const sidenavRoutes: IRoute[] = [
     name: 'Promoções',
     icon: <LocalOffer fontSize={'default'} />,
     path: '/promotions',
+  },
+  {
+    key: 'management',
+    name: 'Gerenciamento',
+    icon: <Settings fontSize={'default'} />,
+    path: '/accounts',
   },
 ];
 

@@ -4,6 +4,7 @@ import { AccountCircle, AccountCircleOutlined, ExitToAppOutlined, FitnessCenterO
 import SwipeableTemporaryDrawer from '../Sidenav';
 import { useAuth } from '../../contexts/auth';
 import useStyles from './styles';
+import { useHistory } from 'react-router-dom';
 
 const ApplicationBar: React.FC = () => {
   const classes = useStyles();
@@ -11,6 +12,7 @@ const ApplicationBar: React.FC = () => {
   const userData: any = user;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const history = useHistory();
 
   interface IMenuItems {
     key: string;
@@ -24,7 +26,7 @@ const ApplicationBar: React.FC = () => {
       key: 'account-info',
       icon: <AccountCircleOutlined fontSize='small' />,
       actionText: 'Conta',
-      action: () => console.warn('account-info action'),
+      action: () => history.push(`/accounts/${userData._id}`),
     },
     {
       key: 'gym-info',

@@ -72,8 +72,6 @@ export const useStylesListPage = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       padding: 0,
-      // backgroundColor: theme.palette.background.paper,
-      height: 'calc(100vh - 220px)',
       borderRadius: 4,
       boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     },
@@ -103,5 +101,29 @@ export const useStylesListPage = makeStyles((theme: Theme) =>
       color: '#A6ACBE',
     },
     listItemBlock: {},
+    paginator: {
+      justifyContent: 'center',
+      padding: '16px!important',
+    },
+    listItem: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    listItemPerson: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '12px',
+    },
+    menuActions: {
+      boxShadow: '0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%) !important',
+    },
+    loading: {
+      height: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+    },
   })
 );

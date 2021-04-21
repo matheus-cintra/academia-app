@@ -52,7 +52,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   async function Login(loginData: ILoginData, funcParam: any) {
     try {
       const response = await api.post('/auth', { ...loginData });
-      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+      api.defaults.headers.Authorization = `Bearer ${response.data['access-token']}`;
       api.defaults.headers['account-id'] = response.data.account._id;
 
       const resSettings = await api.get(`/settings/${response.data.account._id}`);
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       setUserData(response.data.account);
 
       localStorage.setItem('@App:user', JSON.stringify(response.data.account));
-      localStorage.setItem('@App:token', response.data.accessToken);
+      localStorage.setItem('@App:token', response.data['access-token']);
       localStorage.setItem('@App:settings', JSON.stringify(resSettings.data));
       setIsWaiting(false);
     } catch (e) {

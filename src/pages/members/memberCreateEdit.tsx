@@ -109,7 +109,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
       }
 
       member._id
-        ? await api.put(`/members/update-member/${member._id}`, { ...data })
+        ? await api.put(`/members/${member._id}`, { ...data })
         : await api.post('/members/create', { ...data });
 
       member._id ? toast.success('Registro Alterado') : toast.success('Registro Criado');

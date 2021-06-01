@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, CardContent, Container, Typography } from '@material-ui/core';
 import { AccountBalance, AccountCircle, Receipt } from '@material-ui/icons';
 import useStyles from './styles';
-import { api } from '../../services/api';
 
 // const handleRowSelect = (param: any) => {
 //   console.warn('params > ', param);

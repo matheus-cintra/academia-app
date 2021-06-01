@@ -1,12 +1,4 @@
-import {
-  AccountBalance,
-  AccountCircle,
-  LocalOffer,
-  Receipt,
-  ShoppingCart,
-  Dashboard,
-  Settings,
-} from '@material-ui/icons';
+import { AccountBalance, AccountCircle, LocalOffer, Receipt, Dashboard, Settings } from '@material-ui/icons';
 import React, { ReactElement } from 'react';
 
 interface IRoute {

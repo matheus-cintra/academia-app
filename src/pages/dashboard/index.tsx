@@ -31,8 +31,6 @@ const DashboardComponent: React.FC = () => {
   //   //   };
   //   // });
 
-  //   console.warn('members > ', result);
-
   //   setMembers(members);
   //   setIsLoading(false);
   // };

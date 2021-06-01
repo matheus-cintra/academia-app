@@ -35,8 +35,8 @@ export const useStylesCreateEditPage = makeStyles((theme: Theme) =>
     typographySubtitle: {
       color: '#A6ACBE',
       marginBottom: 12,
-      marginLeft: '56px',
-      marginTop: -12,
+      // marginLeft: '56px',
+      // marginTop: -12,
     },
     form: {
       padding: theme.spacing(4),

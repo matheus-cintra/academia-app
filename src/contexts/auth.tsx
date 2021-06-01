@@ -6,11 +6,14 @@ import { decode } from 'jsonwebtoken';
 interface AuthContextData {
   signed: boolean;
   isWaiting: boolean;
+  isUpdated: boolean;
   user: Record<string, unknown> | null;
 
   Login(data: ILoginData, funcParam?: any): Promise<void>;
 
   Logout(): void;
+
+  ReRender(): void;
 }
 
 interface ILoginData {
@@ -24,6 +27,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUserData] = useState(null);
   // const [loginError, setLoginError] = useState(false);
   const [isWaiting, setIsWaiting] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('@App:user');
@@ -80,8 +84,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.removeItem('@App:settings');
   }
 
+  function ReRender() {
+    return setIsUpdated(!isUpdated);
+  }
+
   return (
-    <AuthContext.Provider value={{ signed: Boolean(user), isWaiting, user, Login, Logout }}>
+    <AuthContext.Provider value={{ signed: Boolean(user), isWaiting, user, Login, Logout, ReRender, isUpdated }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { AppBar, Divider, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { AccountCircle, AccountCircleOutlined, ExitToAppOutlined, FitnessCenterOutlined } from '@material-ui/icons';
 import SwipeableTemporaryDrawer from '../Sidenav';
@@ -8,11 +8,24 @@ import { useHistory } from 'react-router-dom';
 
 const ApplicationBar: React.FC = () => {
   const classes = useStyles();
-  const { Logout, user } = useAuth();
-  const userData: any = user;
+  const { Logout, isUpdated, user } = useAuth();
+  const [userData, setUserData] = useState<any>({
+    name: '',
+  });
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
+
+  useEffect(() => {
+    const newUser: any = localStorage.getItem('@App:user');
+
+    if (!newUser) {
+      setUserData(user);
+    } else {
+      setUserData(JSON.parse(newUser));
+    }
+  }, [isUpdated]);
 
   interface IMenuItems {
     key: string;
@@ -26,13 +39,19 @@ const ApplicationBar: React.FC = () => {
       key: 'account-info',
       icon: <AccountCircleOutlined fontSize='small' />,
       actionText: 'Conta',
-      action: () => history.push(`/accounts/${userData._id}`),
+      action: () => {
+        setAnchorEl(null);
+        history.push(`/account`);
+      },
     },
     {
       key: 'gym-info',
       icon: <FitnessCenterOutlined fontSize='small' />,
       actionText: 'Academia',
-      action: () => console.warn('gym-info action'),
+      action: () => {
+        setAnchorEl(null);
+        console.warn('gym-info action');
+      },
     },
     {
       key: 'logout',

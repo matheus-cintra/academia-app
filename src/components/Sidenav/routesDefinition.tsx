@@ -35,12 +35,12 @@ const sidenavRoutes: IRoute[] = [
     icon: <Receipt fontSize={'default'} />,
     path: '/payments',
   },
-  {
-    key: 'plans',
-    name: 'Planos',
-    icon: <ShoppingCart fontSize={'default'} />,
-    path: '/plans',
-  },
+  // {
+  //   key: 'plans',
+  //   name: 'Planos',
+  //   icon: <ShoppingCart fontSize={'default'} />,
+  //   path: '/plans',
+  // },
   {
     key: 'billing',
     name: 'Faturamento',

@@ -5,9 +5,7 @@ import {
   Container,
   Divider,
   FormControl,
-  FormHelperText,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Paper,
@@ -17,18 +15,18 @@ import {
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import { api } from '../../services/api';
-import { getDataById } from '../../common/dbMethods';
+import { getData } from '../../common/dbMethods';
 import { toast } from 'react-toastify';
 import { useStylesCreateEditPage } from './styles';
 import { decorateAccount } from './decorator';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { ArrowBack } from '@material-ui/icons';
+import { useAuth } from '../../contexts/auth';
 
-const AccountsCreateEdit: React.FC = (props: any) => {
+const AccountsCreateEdit: React.FC = () => {
   const classes = useStylesCreateEditPage();
+  const { ReRender } = useAuth();
   const [account, setAccount] = useState<any>({});
-  const [settings, setSettings] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const user: any = localStorage.getItem('@App:user');
   const history = useHistory();
@@ -52,29 +50,17 @@ const AccountsCreateEdit: React.FC = (props: any) => {
       birthDate: yup.string(),
       document: yup.string().required('Documento é obrigatório'),
       genre: yup.string(),
-      dueDay: yup.string().required('Data de Vencimento é obrigatório'),
-      paymentMethodId: yup.string().required('Modo de Pagamento é obrigatório'),
-      accountshipMethodId: yup.string().required('Tipo de Plano é obrigatório'),
+      gymName: yup.string().required('Nome da academia é obrigatório'),
     },
     [['email', 'phone']]
   );
 
   async function handleGetAccount() {
-    const accountId = props.match.params.id;
-    const settings: any = localStorage.getItem('@App:settings');
-
-    setSettings(JSON.parse(settings));
-    if (accountId !== 'new') {
-      const account = await getDataById('accounts', accountId);
-
-      decorateAccount(account.data);
-
-      console.warn('ACCOUNT > ', account);
-
-      if (account.status === 200) {
-        setAccount(account.data);
-        await formik.setValues({ ...account.data });
-      }
+    const account = await getData('accounts');
+    decorateAccount(account.data, formik.initialValues);
+    if (account.status === 200) {
+      setAccount(account.data);
+      await formik.setValues(account.data);
     }
   }
 
@@ -83,19 +69,17 @@ const AccountsCreateEdit: React.FC = (props: any) => {
     handleGetAccount().then(() => {
       setIsLoading(false);
     });
-  }, [props]);
+  }, []);
 
   const formik = useFormik({
     initialValues: {
       name: '',
+      birthDate: '',
+      genre: '',
+      document: '',
       email: '',
       phone: '',
-      birthDate: '',
-      document: '',
-      genre: '',
-      dueDay: '',
-      paymentMethodId: '',
-      accountshipMethodId: '',
+      gymName: '',
     },
     validationSchema: validationSchema,
     onSubmit: values => handleSubmit(values),
@@ -110,15 +94,13 @@ const AccountsCreateEdit: React.FC = (props: any) => {
         data[value] = values[value] !== '' ? values[value] : undefined;
       }
 
-      account._id
-        ? await api.put(`/accounts/update-account/${account._id}`, { ...data })
-        : await api.post('/accounts/create', { ...data });
+      const result = await api.put(`/accounts/update-account`, { ...data });
 
-      account._id ? toast.success('Registro Alterado') : toast.success('Registro Criado');
+      localStorage.setItem('@App:user', JSON.stringify(result.data));
+      await handleGetAccount();
+      ReRender();
 
-      if (!account._id) {
-        history.push('/accounts');
-      }
+      toast.success('Registro Alterado');
     } catch (e) {
       toast.success(e.response.data.message);
     }
@@ -131,22 +113,11 @@ const AccountsCreateEdit: React.FC = (props: any) => {
   return (
     <Container maxWidth='lg' className={classes.rootContainer}>
       <div className={classes.titleComponent}>
-        <div className={classes.titleContent}>
-          <IconButton
-            aria-label='account of current user'
-            aria-controls='menu-appbar'
-            aria-haspopup='true'
-            onClick={handleNavigate}
-            color='inherit'
-          >
-            <ArrowBack style={{ fontSize: 32 }} />
-          </IconButton>
-          <Typography variant='h5' className={classes.title}>
-            Gerenciamento de Perfil
-          </Typography>
-        </div>
+        <Typography variant='h5' className={classes.title}>
+          Gerenciamento de Perfil
+        </Typography>
         <Typography variant='subtitle1' className={classes.typographySubtitle}>
-          Mecca Gym
+          {account.gymName}
         </Typography>
       </div>
 
@@ -264,71 +235,23 @@ const AccountsCreateEdit: React.FC = (props: any) => {
             </Grid>
             <Divider className={classes.divider} />
             <Typography variant='h5' className={classes.titleInsideForm}>
-              Financeiro
+              Dados da Academia
             </Typography>
             <Grid container spacing={2} style={{ marginTop: 24 }}>
-              <Grid item xs={12} md={4}>
-                <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='paymentMethodSelectLabel'>Forma de Pagamento</InputLabel>
-                  <Select
-                    labelId='paymentMethodSelectLabel'
-                    id='paymentMethodSelect'
-                    value={formik.values.paymentMethodId || ''}
-                    onChange={e =>
-                      e.target.value !== undefined && formik.setFieldValue('paymentMethodId', e.target.value)
-                    }
-                    label='Forma de Pagamento'
-                  >
-                    {settings &&
-                      settings.paymentMethods &&
-                      settings.paymentMethods.map((paymentMethod: any) => (
-                        <MenuItem key={paymentMethod._id} value={paymentMethod._id}>
-                          {paymentMethod.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                  {formik.touched.paymentMethodId && Boolean(formik.errors.paymentMethodId) && (
-                    <FormHelperText error>{formik.errors.paymentMethodId}</FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='accountshipMethodSelectLabel'>Plano Escolhido</InputLabel>
-                  <Select
-                    labelId='accountshipMethodSelectLabel'
-                    id='accountshipMethodSelect'
-                    value={formik.values.accountshipMethodId || ''}
-                    onChange={e => {
-                      e.target.value !== undefined && formik.setFieldValue('accountshipMethodId', e.target.value);
-                    }}
-                    label='Plano Escolhido'
-                  >
-                    {settings &&
-                      settings.accountshipTypes &&
-                      settings.accountshipTypes.map((accountshipType: any) => (
-                        <MenuItem key={accountshipType._id} value={accountshipType._id}>
-                          {accountshipType.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                  {formik.touched.accountshipMethodId && Boolean(formik.errors.accountshipMethodId) && (
-                    <FormHelperText error>{formik.errors.accountshipMethodId}</FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   variant='outlined'
                   fullWidth
                   required
-                  id='dueDay'
-                  name='dueDay'
-                  label='Dia de Vencimento'
-                  type='dueDay'
-                  autoComplete='dueDay'
-                  value={formik.values.dueDay}
+                  id='gymName'
+                  name='gymName'
+                  label='Nome da Academia'
+                  type='text'
+                  autoComplete='gymName'
+                  value={formik.values.gymName}
                   onChange={formik.handleChange}
+                  error={formik.touched.gymName && Boolean(formik.errors.gymName)}
+                  helperText={formik.touched.gymName && formik.errors.gymName}
                 />
               </Grid>
             </Grid>

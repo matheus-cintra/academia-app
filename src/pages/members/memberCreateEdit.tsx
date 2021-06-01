@@ -28,7 +28,8 @@ import { ArrowBack } from '@material-ui/icons';
 const MembersCreateEdit: React.FC = (props: any) => {
   const classes = useStylesCreateEditPage();
   const [member, setMember] = useState<any>({});
-  const [settings, setSettings] = useState<any>({});
+  const [plans, setPlans] = useState<any[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const user: any = localStorage.getItem('@App:user');
   const history = useHistory();
@@ -54,24 +55,25 @@ const MembersCreateEdit: React.FC = (props: any) => {
       genre: yup.string(),
       dueDay: yup.string().required('Data de Vencimento é obrigatório'),
       paymentMethodId: yup.string().required('Modo de Pagamento é obrigatório'),
-      membershipMethodId: yup.string().required('Tipo de Plano é obrigatório'),
+      planId: yup.string().required('Tipo de Plano é obrigatório'),
     },
     [['email', 'phone']]
   );
 
   async function handleGetMember() {
     const memberId = props.match.params.id;
-    const settings: any = localStorage.getItem('@App:settings');
+    const plans = await api.get('/plans/list');
+    const paymentMethods = await api.get('payment-methods/list');
 
-    setSettings(JSON.parse(settings));
+    setPlans(plans.data);
+    setPaymentMethods(paymentMethods.data);
+
     if (memberId !== 'new') {
       const member = await getDataById('members', memberId);
-
-      decorateMember(member.data);
-
+      decorateMember(member.data[0]);
       if (member.status === 200) {
         setMember(member.data);
-        await formik.setValues({ ...member.data });
+        await formik.setValues({ ...member.data[0] });
       }
     }
   }
@@ -93,7 +95,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
       genre: '',
       dueDay: '',
       paymentMethodId: '',
-      membershipMethodId: '',
+      planId: '',
     },
     validationSchema: validationSchema,
     onSubmit: values => handleSubmit(values),
@@ -277,9 +279,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
                     }
                     label='Forma de Pagamento'
                   >
-                    {settings &&
-                      settings.paymentMethods &&
-                      settings.paymentMethods.map((paymentMethod: any) => (
+                    {paymentMethods &&
+                      paymentMethods.map((paymentMethod: any) => (
                         <MenuItem key={paymentMethod._id} value={paymentMethod._id}>
                           {paymentMethod.name}
                         </MenuItem>
@@ -296,22 +297,21 @@ const MembersCreateEdit: React.FC = (props: any) => {
                   <Select
                     labelId='membershipMethodSelectLabel'
                     id='membershipMethodSelect'
-                    value={formik.values.membershipMethodId || ''}
+                    value={formik.values.planId || ''}
                     onChange={e => {
-                      e.target.value !== undefined && formik.setFieldValue('membershipMethodId', e.target.value);
+                      e.target.value !== undefined && formik.setFieldValue('planId', e.target.value);
                     }}
                     label='Plano Escolhido'
                   >
-                    {settings &&
-                      settings.membershipTypes &&
-                      settings.membershipTypes.map((membershipType: any) => (
+                    {plans &&
+                      plans.map((membershipType: any) => (
                         <MenuItem key={membershipType._id} value={membershipType._id}>
                           {membershipType.name}
                         </MenuItem>
                       ))}
                   </Select>
-                  {formik.touched.membershipMethodId && Boolean(formik.errors.membershipMethodId) && (
-                    <FormHelperText error>{formik.errors.membershipMethodId}</FormHelperText>
+                  {formik.touched.planId && Boolean(formik.errors.planId) && (
+                    <FormHelperText error>{formik.errors.planId}</FormHelperText>
                   )}
                 </FormControl>
               </Grid>

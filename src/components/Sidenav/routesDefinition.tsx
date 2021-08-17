@@ -12,44 +12,44 @@ const sidenavRoutes: IRoute[] = [
   {
     key: 'dashboard',
     name: 'Home',
-    icon: <Dashboard fontSize={'default'} />,
+    icon: <Dashboard fontSize={'medium'} />,
     path: '/dashboard',
   },
   {
     key: 'members',
     name: 'Alunos',
-    icon: <AccountCircle fontSize={'default'} />,
+    icon: <AccountCircle fontSize={'medium'} />,
     path: '/members',
   },
   {
     key: 'payments',
     name: 'Pagamentos',
-    icon: <Receipt fontSize={'default'} />,
+    icon: <Receipt fontSize={'medium'} />,
     path: '/payments',
   },
   // {
   //   key: 'plans',
   //   name: 'Planos',
-  //   icon: <ShoppingCart fontSize={'default'} />,
+  //   icon: <ShoppingCart fontSize={'medium'} />,
   //   path: '/plans',
   // },
   {
     key: 'billing',
     name: 'Faturamento',
-    icon: <AccountBalance fontSize={'default'} />,
+    icon: <AccountBalance fontSize={'medium'} />,
     path: '/billing',
   },
   {
     key: 'promotions',
     name: 'Promoções',
-    icon: <LocalOffer fontSize={'default'} />,
+    icon: <LocalOffer fontSize={'medium'} />,
     path: '/promotions',
   },
   {
     key: 'management',
-    name: 'Gerenciamento',
-    icon: <Settings fontSize={'default'} />,
-    path: '/accounts',
+    name: 'Configurações',
+    icon: <Settings fontSize={'medium'} />,
+    path: '/settings',
   },
 ];
 

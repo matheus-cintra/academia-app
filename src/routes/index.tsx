@@ -6,6 +6,7 @@ import MembersList from '../pages/members/membersList';
 import Route from './Route';
 import MembersCreateEdit from '../pages/members/memberCreateEdit';
 import AccountsCreateEdit from '../pages/accounts/accountsCreateEdit';
+import SystemSettings from '../pages/settings/settings';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -14,6 +15,7 @@ const Routes: React.FC = () => (
     <Route path='/members' isPrivate={true} exact component={MembersList} />
     <Route path='/members/:id' isPrivate={true} exact component={(props: any) => <MembersCreateEdit {...props} />} />
     <Route path='/account/' isPrivate={true} exact component={(props: any) => <AccountsCreateEdit {...props} />} />
+    <Route path='/settings' isPrivate={true} exact component={(props: any) => <SystemSettings {...props} />} />
   </Switch>
 );
 

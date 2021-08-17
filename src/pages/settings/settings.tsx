@@ -1,6 +1,6 @@
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Container, Divider } from '@material-ui/core';
-import { useFormik, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import { useFormik } from 'formik';
+import React, { useEffect } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useStylesSettingsPage } from './styles';
 import PlansComponent from '../../components/Plans';

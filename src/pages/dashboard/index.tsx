@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Container, Typography } from '@material-ui/core';
 import { AccountBalance, AccountCircle, Receipt } from '@material-ui/icons';
 import useStyles from './styles';
+import { useAuth } from '../../contexts/auth';
 
 // const handleRowSelect = (param: any) => {
 //   console.warn('params > ', param);
@@ -14,30 +15,19 @@ import useStyles from './styles';
 
 const DashboardComponent: React.FC = () => {
   const classes = useStyles();
-  // const [members, setMembers] = useState([]);
-  // const [loading, setIsLoading] = useState(false);
+  const { user } = useAuth();
 
-  // const retrieveMembers = async (): Promise<void> => {
-  //   const result = await api.get('/members/list');
+  const [userData, setUserData] = useState<any>({
+    gymName: '',
+  });
 
-  //   // const members = result.data.map((member: any) => {
-  //   //   return {
-  //   //     ...member,
-  //   //     id: member._id
-  //   //       .toString()
-  //   //       .slice(member._id.length - 5, member._id.length)
-  //   //       .toUpperCase(),
-  //   //   };
-  //   // });
+  const getGymName = () => {
+    setUserData(user);
+  };
 
-  //   setMembers(members);
-  //   setIsLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   retrieveMembers();
-  // }, []);
+  useEffect(() => {
+    getGymName();
+  }, []);
 
   return (
     <Container maxWidth='lg' className={classes.rootContainer}>
@@ -46,7 +36,7 @@ const DashboardComponent: React.FC = () => {
           Dashboard
         </Typography>
         <Typography variant='subtitle1' className={classes.typographySubtitle}>
-          Mecca Gym
+          {userData.gymName}
         </Typography>
       </div>
 

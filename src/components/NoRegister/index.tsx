@@ -1,29 +1,9 @@
 import React from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { Typography } from '@material-ui/core';
+import { useStyles } from './styles';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '300px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    text: {
-      fontSize: 24,
-      color: '#E0C3C3',
-      padding: '12px',
-    },
-    icon: {
-      width: '2em',
-      height: '2em',
-      color: '#E0C3C3',
-    },
-  })
-);
 const NoRegisterComponent: React.FC = () => {
   const classes = useStyles();
 

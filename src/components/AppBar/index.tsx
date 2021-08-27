@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 const ApplicationBar: React.FC = () => {
   const classes = useStyles();
   const { Logout, isUpdated, user } = useAuth();
+
   const [userData, setUserData] = useState<any>({
     name: '',
   });

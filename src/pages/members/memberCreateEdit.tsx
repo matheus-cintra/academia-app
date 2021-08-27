@@ -63,7 +63,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
   async function handleGetMember() {
     const memberId = props.match.params.id;
     const plans = await api.get('/plans/list');
-    const paymentMethods = await api.get('payment-methods/list');
+    const paymentMethods = await api.get('payment-methods/list?active=true');
 
     setPlans(plans.data);
     setPaymentMethods(paymentMethods.data);
@@ -72,7 +72,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
       const member = await getDataById('members', memberId);
       decorateMember(member.data[0]);
       if (member.status === 200) {
-        setMember(member.data);
+        setMember(member.data[0]);
         await formik.setValues({ ...member.data[0] });
       }
     }
@@ -109,6 +109,8 @@ const MembersCreateEdit: React.FC = (props: any) => {
       for (const value in values) {
         data[value] = values[value] !== '' ? values[value] : undefined;
       }
+
+      console.warn('member > ', member);
 
       member._id
         ? await api.put(`/members/${member._id}`, { ...data })
@@ -330,7 +332,7 @@ const MembersCreateEdit: React.FC = (props: any) => {
                 />
               </Grid>
             </Grid>
-            <Grid container justify={'flex-end'} spacing={2} style={{ paddingTop: 24 }}>
+            <Grid container justifyContent={'flex-end'} spacing={2} style={{ paddingTop: 24 }}>
               <Grid item>
                 <Button type='submit' variant='contained' color='primary'>
                   Salvar

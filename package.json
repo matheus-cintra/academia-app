@@ -15,6 +15,7 @@
     "fontsource-roboto": "^4.0.0",
     "formik": "^2.2.6",
     "jsonwebtoken": "^8.5.1",
+    "mui-rte": "^1.29.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-number-format": "^4.6.4",

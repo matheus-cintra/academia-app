@@ -4,7 +4,7 @@ import { AddCircleOutline } from '@material-ui/icons';
 import { Button, Checkbox, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 import { useStyles } from './styles';
-import { api } from '../../services/api';
+import { api } from '../../../../services/api';
 
 export function NumberFormatCustom(props: any) {
   const { inputRef, onChange, ...other } = props;

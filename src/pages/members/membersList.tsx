@@ -12,30 +12,41 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { ErrorOutline, AddCircle } from '@material-ui/icons';
 import NoRegisterComponent from '../../components/NoRegister';
 import { getData } from '../../common/dbMethods';
 import { useStylesListPage } from './styles';
 import Pagination from '@material-ui/lab/Pagination';
 import { AccountCircle, MoreVert, NotificationImportant } from '@material-ui/icons';
 import { ListItemSecondaryAction } from '@material-ui/core';
+import { decorateMemberList } from './decorator';
+import FormDialogEmail from '../../components/DialogEmail';
 
-const MembersList: React.FC = () => {
+const MembersList = () => {
   const classes = useStylesListPage();
   const history = useHistory();
   const [alunos, setAlunos] = useState<any>([]);
+  const [memberDialog, setMemberDialog] = useState<any>({});
   const itemsPerPage = 15;
   const [page, setPage] = React.useState(1);
   const [noOfPages, setNoOfPages] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
   const open = Boolean(anchorEl);
+  const user: any = localStorage.getItem('@App:user') || {};
+
+  const [userData, setUserData] = useState<any>({
+    gymName: '',
+  });
 
   const getMembers = async () => {
     const result = await getData('/members/list');
+    decorateMemberList(result.data);
     setAlunos(result.data);
     setNoOfPages(Math.ceil(result.data.length / itemsPerPage));
     setLoading(false);
@@ -49,7 +60,12 @@ const MembersList: React.FC = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const getGymName = () => {
+    setUserData(JSON.parse(user));
+  };
+
   useEffect(() => {
+    getGymName();
     setLoading(true);
     getMembers();
   }, []);
@@ -58,26 +74,31 @@ const MembersList: React.FC = () => {
     return history.push(`members/${memberId ? memberId : 'new'}`);
   };
 
-  const handleNotification = () => {
+  const handleNotification = (member: any) => {
     setAnchorEl(null);
-    console.warn('NOTIFICAR > ');
+    setOpenDialog(true);
+    setMemberDialog(member);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   const options = [
     {
       key: 'edit',
       text: 'Editar',
-      action: () => handleNotification(),
+      action: (member: any) => handleNotification(member),
       icon: <AccountCircle />,
     },
     {
       key: 'notify',
       text: 'Notificar',
-      action: () => handleNotification(),
+      action: (member: any) => handleNotification(member),
       icon: <NotificationImportant />,
     },
   ];
@@ -90,13 +111,15 @@ const MembersList: React.FC = () => {
             Listagem de Alunos
           </Typography>
           <Typography variant='subtitle1' className={classes.typographySubtitle}>
-            Mecca Gym
+            {userData.gymName}
           </Typography>
         </div>
         <div className={classes.actionsComponent}>
-          <IconButton color='primary' aria-label='add member' component='div' onClick={() => handleNavigate()}>
-            <AddCircleIcon fontSize='large' />
-          </IconButton>
+          <Tooltip title='Adicionar Aluno' aria-label='add member'>
+            <IconButton color='primary' aria-label='add member' component='div' onClick={() => handleNavigate()}>
+              <AddCircle fontSize='large' />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
       <List dense className={classes.root}>
@@ -120,6 +143,14 @@ const MembersList: React.FC = () => {
                     <ListItemText id={aluno.name} secondary={aluno.email ? aluno.email : aluno.phone} />
                   </div>
                 </div>
+                <div className={classes.price}>
+                  {!aluno.isPaid ? (
+                    <Tooltip title='Mensalidade atrasada' aria-label='delayed payment'>
+                      <ErrorOutline fontSize='medium' className={`${classes.flicker} ${classes.priceDelay}`} />
+                    </Tooltip>
+                  ) : null}
+                  <ListItemText id={aluno._id} primary={`R$ ${aluno.plan.value.toFixed(2)}`} />
+                </div>
                 <ListItemSecondaryAction>
                   <IconButton aria-label='more' aria-controls='long-menu' aria-haspopup='true' onClick={handleClick}>
                     <MoreVert />
@@ -134,7 +165,7 @@ const MembersList: React.FC = () => {
                     onClose={handleClose}
                   >
                     {options.map(option => (
-                      <MenuItem key={option.key} onClick={() => option.action()}>
+                      <MenuItem key={option.key} onClick={() => option.action(aluno)}>
                         <ListItemIcon>{option.icon}</ListItemIcon>
                         <Typography variant='inherit'>{option.text}</Typography>
                       </MenuItem>
@@ -147,6 +178,7 @@ const MembersList: React.FC = () => {
         ) : (
           <NoRegisterComponent />
         )}
+        <FormDialogEmail handleClose={handleCloseDialog} open={openDialog} user={memberDialog} />
       </List>
       <Box component='span'>
         <Pagination

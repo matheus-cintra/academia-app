@@ -3,10 +3,11 @@ import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useStylesSettingsPage } from './styles';
-import PlansComponent from '../../components/Plans';
+import PlansComponent from './panels/Plans';
 import * as yup from 'yup';
 import { api } from '../../services/api';
 import { toast } from 'react-toastify';
+import PaymentMethodsComponent from './panels/PaymentMethods';
 
 const SystemSettings: React.FC = () => {
   const classes = useStylesSettingsPage();
@@ -24,6 +25,13 @@ const SystemSettings: React.FC = () => {
     })
   );
 
+  const validationNewPaymentMethodSchema = yup.array().of(
+    yup.object().shape({
+      name: yup.string().required('Nome do Plano obrigatório'),
+      active: yup.boolean().required('Preço obrigatório'),
+    })
+  );
+
   const handleChange = (panel: any) => (event: any, isExpanded: any) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -32,15 +40,27 @@ const SystemSettings: React.FC = () => {
     handleChange('panel1');
   }, []);
 
-  const handleSubmit = async (values: any): Promise<any> => {
+  const handleSubmitPlans = async (values: any): Promise<any> => {
     try {
       const toUpdate = values.plans.filter((item: any) => item._id);
       const toCreate = values.plans.filter((item: any) => !item._id);
-      await api.post('plans/create', toCreate);
-      await api.put('plans', toUpdate);
+      toCreate.length && (await api.post('plans/create', toCreate));
+      toUpdate && (await api.put('plans', toUpdate));
       return toast.success('Configurações de Plano Atualizadas.');
     } catch (error) {
       return toast.error('Erro ao atualizar as Configurações de Plano.');
+    }
+  };
+
+  const handleSubmitPaymentMethods = async (values: any): Promise<any> => {
+    try {
+      const toUpdate = values.paymentMethods.filter((item: any) => item._id);
+      const toCreate = values.paymentMethods.filter((item: any) => !item._id);
+      toCreate.length && (await api.post('payment-methods/create', toCreate));
+      toUpdate && (await api.put('payment-methods', toUpdate));
+      return toast.success('Configurações de Métodos de Pagamento Atualizadas.');
+    } catch (error) {
+      return toast.error('Erro ao atualizar as Configurações de Métodos de Pagamentos.');
     }
   };
 
@@ -49,7 +69,15 @@ const SystemSettings: React.FC = () => {
       plans: [],
     },
     validationSchema: validationNewPlanSchema,
-    onSubmit: async values => await handleSubmit(values),
+    onSubmit: async values => await handleSubmitPlans(values),
+  });
+
+  const formikPaymentMethods = useFormik({
+    initialValues: {
+      paymentMethods: [],
+    },
+    validationSchema: validationNewPaymentMethodSchema,
+    onSubmit: async values => await handleSubmitPaymentMethods(values),
   });
 
   return (
@@ -79,10 +107,7 @@ const SystemSettings: React.FC = () => {
             <Typography className={classes.heading}>Formas De Pagamento</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
-              Texto escrito Adicionar Nova Forma de Pagamento onde sera adicionada uma nova linha e adicionar ao array
-              para salvar
-            </Typography>
+            <PaymentMethodsComponent formik={formikPaymentMethods} />
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
